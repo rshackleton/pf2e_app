@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pf2e_app/auth/auth.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -13,12 +14,7 @@ class App extends StatelessWidget {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text("PF2e App - ${appFlavor ?? "Unknown Flavor"}"),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text("Hello world!")],
-          ),
-        ),
+        body: Center(child: Auth()),
       ),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

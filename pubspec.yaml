@@ -10,6 +10,10 @@ dependencies:
   flutter:
     sdk: flutter
 
+  auth0_flutter: ^2.0.0
+  flutter_dotenv: ^6.0.0
+  supabase_flutter: ^2.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -19,3 +23,7 @@ dev_dependencies:
 flutter:
   default-flavor: production
   uses-material-design: true
+
+  assets:
+    # Required for flutter_dotenv to load environment variables from a file.
+    - .env

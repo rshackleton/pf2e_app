@@ -1,9 +1,33 @@
+import io.github.cdimascio.dotenv.dotenv
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("io.github.cdimascio:dotenv-kotlin:6.5.1")
+    }
+}
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
+
+// Load .env using dotenv-kotlin (https://github.com/cdimascio/dotenv-kotlin)
+val workspaceRootDir = rootProject.rootDir.parentFile?.absolutePath ?: rootProject.rootDir.absolutePath
+val dotenv = dotenv {
+    directory = workspaceRootDir
+    filename = ".env"
+    ignoreIfMissing = true
+    systemProperties = true
+}
+
+val auth0Domain: String = dotenv["AUTH0_DOMAIN"] ?: ""
+val auth0Scheme: String = dotenv["AUTH0_SCHEME"] ?: ""
 
 android {
     namespace = "com.shaddick.pf2e_app"
@@ -28,6 +52,13 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        manifestPlaceholders.putAll(
+            mapOf(
+                "auth0Domain" to auth0Domain,
+                "auth0Scheme" to auth0Scheme
+            )
+        )
     }
 
     buildTypes {
