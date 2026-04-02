@@ -4,8 +4,6 @@ import 'package:pf2e_app/features/auth/manager/auth_manager.dart';
 import 'package:pf2e_app/features/auth/widgets/login_widget.dart';
 import 'package:pf2e_app/features/auth/widgets/profile_widget.dart';
 
-final di = GetIt.instance;
-
 /// Root authentication page.
 /// Handles the three states: loading, authenticated, and unauthenticated.
 class AuthPage extends WatchingWidget {
@@ -26,16 +24,16 @@ class AuthPage extends WatchingWidget {
     );
 
     // Watch credentials
-    final credentials = watch(authManager.credentials);
+    final credentials = watchValue((AuthManager m) => m.credentials);
 
     // Watch error state
-    final error = watch(authManager.authError);
+    final error = watchValue((AuthManager m) => m.authError);
 
     if (isInitializing) {
       return const Center(child: CircularProgressIndicator.adaptive());
     }
 
-    if (credentials.value != null) {
+    if (credentials != null) {
       final isLoggingOut = watchValue(
         (AuthManager m) => m.logoutCommand.isRunning,
       );
@@ -44,7 +42,7 @@ class AuthPage extends WatchingWidget {
           ? const Center(child: CircularProgressIndicator.adaptive())
           : ProfileWidget(
               onLogout: () => authManager.logoutCommand.run(),
-              user: credentials.value?.user,
+              user: credentials.user,
             );
     }
 
@@ -54,7 +52,7 @@ class AuthPage extends WatchingWidget {
         ? const Center(child: CircularProgressIndicator.adaptive())
         : LoginWidget(
             onLogin: () => authManager.loginCommand.run(),
-            error: error.value,
+            error: error,
           );
   }
 }

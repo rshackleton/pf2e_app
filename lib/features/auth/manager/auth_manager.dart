@@ -1,15 +1,13 @@
 import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:command_it/command_it.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get_it/get_it.dart';
-import 'package:pf2e_app/features/auth/services/auth0_service.dart';
-
-final di = GetIt.instance;
+import 'package:pf2e_app/features/auth/services/auth_service.dart';
+import 'package:pf2e_app/locator.dart';
 
 /// Manages authentication business logic and state.
 /// Provides reactive Commands and ValueListenables for the UI.
 class AuthManager extends ChangeNotifier {
-  final _auth0Service = di<Auth0Service>();
+  final _authService = di<AuthService>();
 
   // State
   final _credentials = ValueNotifier<Credentials?>(null);
@@ -36,28 +34,28 @@ class AuthManager extends ChangeNotifier {
   Future<void> _init() async {
     _authError.value = null;
 
-    final hasSession = await _auth0Service.hasValidCredentials();
+    final hasSession = await _authService.hasValidCredentials();
 
     if (!hasSession) {
       _credentials.value = null;
       return;
     }
 
-    final credentials = await _auth0Service.getSession();
+    final credentials = await _authService.getSession();
     _credentials.value = credentials;
   }
 
   Future<void> _login() async {
     _authError.value = null;
 
-    final credentials = await _auth0Service.login();
+    final credentials = await _authService.login();
     _credentials.value = credentials;
   }
 
   Future<void> _logout() async {
     _authError.value = null;
 
-    await _auth0Service.logout();
+    await _authService.logout();
     _credentials.value = null;
   }
 

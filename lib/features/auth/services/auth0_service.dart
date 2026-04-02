@@ -1,9 +1,10 @@
 import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:pf2e_app/features/auth/services/auth_service.dart';
 
+/// Auth0 implementation of AuthService.
 /// Wraps the Auth0 library for dependency injection.
-/// Converts Auth0-specific data to app types.
-class Auth0Service {
+class Auth0Service implements AuthService {
   late final Auth0 _auth0;
   late final String _appScheme;
 
@@ -14,6 +15,7 @@ class Auth0Service {
     return this;
   }
 
+  @override
   Future<Credentials?> login() async {
     final credentials = await _auth0
         .webAuthentication(scheme: _appScheme)
@@ -21,14 +23,17 @@ class Auth0Service {
     return credentials;
   }
 
+  @override
   Future<void> logout() async {
     await _auth0.webAuthentication(scheme: _appScheme).logout(useHTTPS: true);
   }
 
+  @override
   Future<Credentials> getSession() async {
     return await _auth0.credentialsManager.credentials();
   }
 
+  @override
   Future<bool> hasValidCredentials() async {
     return await _auth0.credentialsManager.hasValidCredentials();
   }
