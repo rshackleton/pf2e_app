@@ -1,0 +1,59 @@
+name: Flutter test and build
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Run Flutter Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          cache: true
+          channel: stable
+
+      - name: Setup Flutter dependencies
+        run: flutter pub get
+
+      - name: Run all tests
+        run: flutter test --coverage
+
+  build-android:
+    name: Build Android
+    runs-on: ubuntu-latest
+    needs: test
+
+    env:
+      BUILD_FLAVOR: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          cache: true
+          channel: stable
+
+      - name: Setup Flutter dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --flavor $BUILD_FLAVOR --split-per-abi
+
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: build-android
+          path: build/app/outputs/flutter-apk/app-*-release.apk
