@@ -35,5 +35,3 @@ flutter:
   assets:
     # Required for flutter_dotenv to load environment variables from a file.
     - path: .env
-      flavors:
-        - development
