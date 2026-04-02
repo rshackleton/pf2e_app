@@ -1,0 +1,70 @@
+name: Flutter CI and APK build
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  test:
+    name: Run Flutter Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Run all tests
+        run: flutter test --coverage
+
+  build_apk:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    needs: test
+
+    env:
+      BUILD_FLAVOR: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Show branch and selected flavor
+        run: |
+          echo "GITHUB_REF=${{ github.ref }}"
+          echo "Selected flavor=$BUILD_FLAVOR"
+
+      - name: Build Android APK for flavor
+        run: flutter build apk --flavor $BUILD_FLAVOR --target-platform android-arm,android-arm64,android-x64 --split-per-abi
+
+      - name: Collect built APKs
+        run: |
+          mkdir -p artifacts
+          cp build/app/outputs/flutter-apk/app-${BUILD_FLAVOR}-arm64-v8a.apk artifacts/ 2>/dev/null || true
+          cp build/app/outputs/flutter-apk/app-${BUILD_FLAVOR}-armeabi-v7a.apk artifacts/ 2>/dev/null || true
+          cp build/app/outputs/flutter-apk/app-${BUILD_FLAVOR}-x86_64.apk artifacts/ 2>/dev/null || true
+          cp build/app/outputs/flutter-apk/app-${BUILD_FLAVOR}.apk artifacts/ 2>/dev/null || true
+          ls -l artifacts || true
+
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-apk-${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+          path: artifacts/**/*.apk
