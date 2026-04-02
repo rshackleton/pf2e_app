@@ -29,6 +29,9 @@ jobs:
       - name: Setup Flutter dependencies
         run: flutter pub get
 
+      - name: Run build runner
+        run: dart run build_runner build
+
       - name: Run all tests
         run: flutter test --coverage
 
@@ -55,6 +58,9 @@ jobs:
 
       - name: Setup Flutter dependencies
         run: flutter pub get
+
+      - name: Run build runner
+        run: dart run build_runner build
 
       - name: Build APK
         run: flutter build apk --flavor $BUILD_FLAVOR --split-per-abi
