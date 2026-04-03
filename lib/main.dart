@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl_standalone.dart';
 import 'package:pf2e_app/app.dart';
 import 'package:pf2e_app/features/auth/services/auth_service.dart';
 import 'package:pf2e_app/locator.dart';
@@ -12,6 +14,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 final di = GetIt.instance;
 
 Future<void> main() async {
+  // Setup Intl package with the device locale.
+  await findSystemLocale();
+
+  // Setup date formatting rules using the device locale.
+  await initializeDateFormatting();
+
   WidgetsFlutterBinding.ensureInitialized();
 
   await dotenv.load(fileName: ".env", mergeWith: Platform.environment);

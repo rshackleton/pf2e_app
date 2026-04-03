@@ -1,10 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:pf2e_app/router.gr.dart';
+import 'package:pf2e_app/features/auth/widgets/logout_widget.dart';
 
 @RoutePage()
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,12 +12,7 @@ class HomePage extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            actions: [
-              IconButton(
-                onPressed: () => context.router.navigate(ProfileRoute()),
-                icon: Icon(Icons.account_circle),
-              ),
-            ],
+            actions: [LogoutWidget()],
             centerTitle: true,
             pinned: true,
             title: Text('Some App Name'),
@@ -27,12 +22,7 @@ class HomePage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 16,
-                children: [
-                  ElevatedButton(
-                    onPressed: () => context.router.navigate(AdventuresRoute()),
-                    child: Text('Go to Adventures'),
-                  ),
-                ],
+                children: [Text('TODO: Add account management functions')],
               ),
             ),
           ),

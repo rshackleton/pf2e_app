@@ -42,6 +42,22 @@ class AdventureService {
     }
   }
 
+  Future<Adventure?> getAdventure(int id) async {
+    try {
+      final adventure = await Supabase.instance.client
+          .from('adventures')
+          .select()
+          .eq('id', id)
+          .single()
+          .withConverter(Adventure.fromJson);
+
+      return adventure;
+    } catch (e, s) {
+      debugPrint('Error fetching adventures: $e $s');
+      return null;
+    }
+  }
+
   Future<Adventure> createAdventure(String name) async {
     try {
       final adventure = await Supabase.instance.client
@@ -54,6 +70,15 @@ class AdventureService {
       return adventure;
     } catch (e, s) {
       debugPrint('Error creating adventure: $e $s');
+      rethrow;
+    }
+  }
+
+  Future<void> deleteAdventure(int id) async {
+    try {
+      await Supabase.instance.client.from('adventures').delete().eq('id', id);
+    } catch (e, s) {
+      debugPrint('Error deleting adventure: $e $s');
       rethrow;
     }
   }

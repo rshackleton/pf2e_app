@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:pf2e_app/features/adventures/manager/adventure_manager.dart';
+import 'package:pf2e_app/features/adventures/widgets/adventure_bottom_sheet.dart';
 import 'package:pf2e_app/router.gr.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -22,28 +23,30 @@ class AdventuresListWidget extends WatchingWidget {
     final adventures = watchValue((AdventureManager m) => m.adventures);
 
     return isFetching
-        ? Center(child: CircularProgressIndicator.adaptive())
-        : ListView.builder(
+        ? SliverToBoxAdapter(
+            child: Center(child: CircularProgressIndicator.adaptive()),
+          )
+        : SliverList.builder(
             itemBuilder: (context, index) {
               final adventure = adventures[index];
               return ListTile(
                 onTap: () => {
-                  context.router.push(
-                    AdventureDetailRoute(adventure: adventure),
+                  context.router.navigate(
+                    AdventureDetailRootRoute(adventureId: adventure.id),
                   ),
                 },
                 title: Text(adventure.name),
                 trailing: IconButton(
-                  onPressed: () => {
-                    debugPrint('More options for ${adventure.name}'),
-                  },
+                  onPressed: () => showModalBottomSheet(
+                    context: context,
+                    builder: (context) =>
+                        AdventureBottomSheet(adventure: adventure),
+                  ),
                   icon: Icon(Icons.adaptive.more),
                 ),
               );
             },
             itemCount: adventures.length,
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
           );
   }
 }
