@@ -7,6 +7,8 @@ import 'package:mockito/mockito.dart';
 import 'package:pf2e_app/app.dart';
 import 'package:pf2e_app/features/auth/services/auth_service.dart';
 import 'package:pf2e_app/features/home/home_page.dart';
+import 'package:pf2e_app/features/login/login_page.dart';
+import 'package:pf2e_app/features/profile/profile_page.dart';
 import 'package:pf2e_app/locator.dart';
 import 'package:watch_it/watch_it.dart';
 
@@ -55,8 +57,8 @@ void main() {
     await tester.pumpWidget(const App());
     await tester.pumpAndSettle();
 
-    // Assert: Verify Login button is present
-    expect(find.widgetWithText(ElevatedButton, 'Login'), findsOneWidget);
+    // Assert: Verify login page is displayed
+    expect(find.byType(LoginPage), findsOneWidget);
 
     // Arrange: Mock AuthService to simulate successful login
     final mockCredentials = Credentials(
@@ -75,10 +77,16 @@ void main() {
     await tester.tap(find.widgetWithText(ElevatedButton, 'Login'));
     await tester.pumpAndSettle();
 
-    // Assert: Verify login method was called and home page is displayed
+    // Assert: Verify home page is displayed
     verify(mockAuthService.login()).called(1);
     expect(find.byType(HomePage), findsOneWidget);
-    expect(find.widgetWithIcon(IconButton, Icons.logout), findsOneWidget);
+
+    // Act: Tap the Profile button
+    await tester.tap(find.widgetWithIcon(IconButton, Icons.account_circle));
+    await tester.pumpAndSettle();
+
+    // Assert: Verify profile page is displayed
+    expect(find.byType(ProfilePage), findsOneWidget);
 
     // Arrange: Mock AuthService to simulate logout
     when(mockAuthService.getSession()).thenAnswer((_) async => null);
@@ -87,8 +95,8 @@ void main() {
     await tester.tap(find.widgetWithIcon(IconButton, Icons.logout));
     await tester.pumpAndSettle();
 
-    // Assert: Verify logout method was called and Login button is displayed again
+    // Assert: Verify login page is displayed
     verify(mockAuthService.logout()).called(1);
-    expect(find.widgetWithText(ElevatedButton, 'Login'), findsOneWidget);
+    expect(find.byType(LoginPage), findsOneWidget);
   });
 }
