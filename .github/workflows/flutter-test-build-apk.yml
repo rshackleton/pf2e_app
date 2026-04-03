@@ -79,7 +79,7 @@ jobs:
         run: dart run build_runner build
 
       - name: Build APK
-        run: flutter build apk --flavor $BUILD_FLAVOR --split-per-abi
+        run: flutter build apk --build-number=${{ github.run_number }} --flavor $BUILD_FLAVOR --split-per-abi
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v6
