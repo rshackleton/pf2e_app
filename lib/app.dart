@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pf2e_app/features/auth/pages/auth_page.dart';
+import 'package:pf2e_app/features/auth/widgets/logout_widget.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -13,6 +14,7 @@ class App extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text("PF2e App - ${appFlavor ?? "Unknown Flavor"}"),
+          actions: [const LogoutWidget()],
         ),
         body: SafeArea(
           child: Column(

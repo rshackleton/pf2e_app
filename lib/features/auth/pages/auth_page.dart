@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pf2e_app/features/auth/pages/adventures_page.dart';
 import 'package:watch_it/watch_it.dart';
 import 'package:pf2e_app/features/auth/manager/auth_manager.dart';
 import 'package:pf2e_app/features/auth/widgets/login_widget.dart';
-import 'package:pf2e_app/features/auth/widgets/profile_widget.dart';
 
 /// Root authentication page.
 /// Handles the three states: loading, authenticated, and unauthenticated.
@@ -38,12 +38,10 @@ class AuthPage extends WatchingWidget {
         (AuthManager m) => m.logoutCommand.isRunning,
       );
 
+      // todo: replace with some kind of router that can handle more pages in the future
       return isLoggingOut
           ? const Center(child: CircularProgressIndicator.adaptive())
-          : ProfileWidget(
-              onLogout: () => authManager.logoutCommand.run(),
-              user: credentials.user,
-            );
+          : AdventuresPage();
     }
 
     final isLoggingIn = watchValue((AuthManager m) => m.loginCommand.isRunning);

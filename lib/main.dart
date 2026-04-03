@@ -49,7 +49,7 @@ Future<void> main() async {
     anonKey: sbKey,
     accessToken: () async {
       final credentials = di<AuthManager>().credentials.value;
-      return credentials?.accessToken;
+      return credentials?.idToken;
     },
   );
 
