@@ -3,11 +3,11 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i3;
 
-import 'package:auth0_flutter/auth0_flutter.dart' as _i2;
+import 'package:auth0_flutter/auth0_flutter.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:pf2e_app/features/auth/services/auth_service.dart' as _i3;
+import 'package:pf2e_app/features/auth/services/auth_service.dart' as _i2;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -24,52 +24,34 @@ import 'package:pf2e_app/features/auth/services/auth_service.dart' as _i3;
 // ignore_for_file: subtype_of_sealed_class
 // ignore_for_file: invalid_use_of_internal_member
 
-class _FakeCredentials_0 extends _i1.SmartFake implements _i2.Credentials {
-  _FakeCredentials_0(Object parent, Invocation parentInvocation)
-    : super(parent, parentInvocation);
-}
-
 /// A class which mocks [AuthService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAuthService extends _i1.Mock implements _i3.AuthService {
+class MockAuthService extends _i1.Mock implements _i2.AuthService {
   @override
-  _i4.Future<_i2.Credentials?> login() =>
+  _i3.Future<_i4.Credentials?> login() =>
       (super.noSuchMethod(
             Invocation.method(#login, []),
-            returnValue: _i4.Future<_i2.Credentials?>.value(),
-            returnValueForMissingStub: _i4.Future<_i2.Credentials?>.value(),
+            returnValue: _i3.Future<_i4.Credentials?>.value(),
+            returnValueForMissingStub: _i3.Future<_i4.Credentials?>.value(),
           )
-          as _i4.Future<_i2.Credentials?>);
+          as _i3.Future<_i4.Credentials?>);
 
   @override
-  _i4.Future<void> logout() =>
+  _i3.Future<void> logout() =>
       (super.noSuchMethod(
             Invocation.method(#logout, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i3.Future<void>);
 
   @override
-  _i4.Future<_i2.Credentials> getSession() =>
+  _i3.Future<_i4.Credentials?> getSession() =>
       (super.noSuchMethod(
             Invocation.method(#getSession, []),
-            returnValue: _i4.Future<_i2.Credentials>.value(
-              _FakeCredentials_0(this, Invocation.method(#getSession, [])),
-            ),
-            returnValueForMissingStub: _i4.Future<_i2.Credentials>.value(
-              _FakeCredentials_0(this, Invocation.method(#getSession, [])),
-            ),
+            returnValue: _i3.Future<_i4.Credentials?>.value(),
+            returnValueForMissingStub: _i3.Future<_i4.Credentials?>.value(),
           )
-          as _i4.Future<_i2.Credentials>);
-
-  @override
-  _i4.Future<bool> hasValidCredentials() =>
-      (super.noSuchMethod(
-            Invocation.method(#hasValidCredentials, []),
-            returnValue: _i4.Future<bool>.value(false),
-            returnValueForMissingStub: _i4.Future<bool>.value(false),
-          )
-          as _i4.Future<bool>);
+          as _i3.Future<_i4.Credentials?>);
 }

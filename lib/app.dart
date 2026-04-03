@@ -1,34 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:pf2e_app/features/auth/pages/auth_page.dart';
-import 'package:pf2e_app/features/auth/widgets/logout_widget.dart';
+import 'package:pf2e_app/locator.dart';
+import 'package:pf2e_app/router.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    final appRouter = di<AppRouter>();
+
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text("PF2e App - ${appFlavor ?? "Unknown Flavor"}"),
-          actions: [const LogoutWidget()],
-        ),
-        body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [Expanded(flex: 1, child: const AuthPage())],
-          ),
-        ),
-      ),
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      title: "PF2e App",
+      routerConfig: appRouter.config(),
     );
   }
 }

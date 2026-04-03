@@ -1,6 +1,6 @@
 import 'package:command_it/command_it.dart';
 import 'package:flutter/foundation.dart';
-import 'package:pf2e_app/features/auth/services/adventure_service.dart';
+import 'package:pf2e_app/features/adventures/services/adventure_service.dart';
 import 'package:pf2e_app/locator.dart';
 
 class AdventureManager extends ChangeNotifier {

@@ -2,13 +2,13 @@ import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:pf2e_app/features/auth/pages/auth_page.dart';
+import 'package:pf2e_app/app.dart';
 import 'package:pf2e_app/features/auth/services/auth_service.dart';
-import 'package:pf2e_app/features/auth/widgets/profile_widget.dart';
+import 'package:pf2e_app/features/home/home_page.dart';
 import 'package:pf2e_app/locator.dart';
 import 'package:watch_it/watch_it.dart';
-import 'package:mockito/annotations.dart';
 
 // Annotation which generates the auth_service.mocks.dart library and the MockAuthService class.
 @GenerateNiceMocks([MockSpec<AuthService>()])
@@ -43,16 +43,16 @@ void main() {
     await di.popScope();
   });
 
-  testWidgets('AuthPage renders Login button by default', (
+  testWidgets('App authentication flow works as expected', (
     WidgetTester tester,
   ) async {
     final mockAuthService = di<AuthService>() as MockAuthService;
 
     // Arrange: Mock AuthService to simulate no valid session
-    when(mockAuthService.hasValidCredentials()).thenAnswer((_) async => false);
+    when(mockAuthService.getSession()).thenAnswer((_) async => null);
 
-    // Act: Build the AuthPage
-    await tester.pumpWidget(const MaterialApp(home: AuthPage()));
+    // Act: Load the App widget
+    await tester.pumpWidget(const App());
     await tester.pumpAndSettle();
 
     // Assert: Verify Login button is present
@@ -68,14 +68,27 @@ void main() {
       user: UserProfile(sub: 'test-user-id'),
     );
 
+    when(mockAuthService.getSession()).thenAnswer((_) async => mockCredentials);
     when(mockAuthService.login()).thenAnswer((_) async => mockCredentials);
 
     // Act: Tap the Login button
     await tester.tap(find.widgetWithText(ElevatedButton, 'Login'));
     await tester.pumpAndSettle();
 
-    // Assert: Verify login method was called and credentials are displayed
+    // Assert: Verify login method was called and home page is displayed
     verify(mockAuthService.login()).called(1);
-    expect(find.byType(ProfileWidget), findsOneWidget);
+    expect(find.byType(HomePage), findsOneWidget);
+    expect(find.widgetWithIcon(IconButton, Icons.logout), findsOneWidget);
+
+    // Arrange: Mock AuthService to simulate logout
+    when(mockAuthService.getSession()).thenAnswer((_) async => null);
+
+    // Act: Tap the Logout button
+    await tester.tap(find.widgetWithIcon(IconButton, Icons.logout));
+    await tester.pumpAndSettle();
+
+    // Assert: Verify logout method was called and Login button is displayed again
+    verify(mockAuthService.logout()).called(1);
+    expect(find.widgetWithText(ElevatedButton, 'Login'), findsOneWidget);
   });
 }
