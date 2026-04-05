@@ -20,6 +20,14 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Create .env file
+        run: |
+          echo "AUTH0_DOMAIN=" > .env
+          echo "AUTH0_CLIENT_ID=" >> .env
+          echo "AUTH0_SCHEME=" >> .env
+          echo "SUPABASE_URL=" >> .env
+          echo "SUPABASE_PUBLISHABLE_KEY=" >> .env
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -29,16 +37,11 @@ jobs:
       - name: Setup Flutter dependencies
         run: flutter pub get
 
-      - name: Create .env file
-        run: |
-          echo "AUTH0_DOMAIN=" > .env
-          echo "AUTH0_CLIENT_ID=" >> .env
-          echo "AUTH0_SCHEME=" >> .env
-          echo "SUPABASE_URL=" >> .env
-          echo "SUPABASE_PUBLISHABLE_KEY=" >> .env
-
       - name: Run build runner
         run: dart run build_runner build
+
+      - name: Run Flutter analyze
+        run: flutter analyze
 
       - name: Run all tests
         run: flutter test --coverage
@@ -58,6 +61,14 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Create .env file
+        run: |
+          echo "AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }}" > .env
+          echo "AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }}" >> .env
+          echo "AUTH0_SCHEME=${{ secrets.AUTH0_SCHEME }}" >> .env
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_PUBLISHABLE_KEY=${{ secrets.SUPABASE_PUBLISHABLE_KEY }}" >> .env
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -67,19 +78,11 @@ jobs:
       - name: Setup Flutter dependencies
         run: flutter pub get
 
-      - name: Create .env file
-        run: |
-          echo "AUTH0_DOMAIN=${{ secrets.AUTH0_DOMAIN }}" > .env
-          echo "AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID }}" >> .env
-          echo "AUTH0_SCHEME=${{ secrets.AUTH0_SCHEME }}" >> .env
-          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
-          echo "SUPABASE_PUBLISHABLE_KEY=${{ secrets.SUPABASE_PUBLISHABLE_KEY }}" >> .env
-
       - name: Run build runner
         run: dart run build_runner build
 
       - name: Build APK
-        run: flutter build apk --flavor $BUILD_FLAVOR --split-per-abi
+        run: flutter build apk --build-number=${{ github.run_number }} --flavor $BUILD_FLAVOR --split-per-abi
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v6

@@ -1,16 +1,25 @@
 import 'package:get_it/get_it.dart';
+import 'package:pf2e_app/features/adventures/manager/adventure_manager.dart';
+import 'package:pf2e_app/features/adventures/services/adventure_service.dart';
 import 'package:pf2e_app/features/auth/manager/auth_manager.dart';
-import 'package:pf2e_app/features/auth/services/auth_service.dart';
 import 'package:pf2e_app/features/auth/services/auth0_service.dart';
+import 'package:pf2e_app/features/auth/services/auth_service.dart';
+import 'package:pf2e_app/router.dart';
 
 final di = GetIt.instance;
 
 /// Configures all services and managers in the dependency injection container.
 Future<void> configureDependencies() async {
-  // Auth Service - async singleton (Auth0 implementation)
-  di.registerSingletonAsync<AuthService>(() => Auth0Service().init());
+  di.registerSingleton(AppRouter());
 
-  // Auth Manager - lazy singleton
+  di.registerSingleton<AdventureService>(AdventureService());
+  di.registerSingleton<AuthService>(Auth0Service());
+
+  di.registerLazySingleton<AdventureManager>(
+    () => AdventureManager(),
+    dispose: (m) => m.dispose(),
+  );
+
   di.registerLazySingleton<AuthManager>(
     () => AuthManager(),
     dispose: (m) => m.dispose(),
