@@ -56,6 +56,8 @@ class SupabaseProfileService implements ProfileService {
     String? avatarFileExtension,
   }) async {
     final updates = <String, dynamic>{};
+    String? oldAvatarPath;
+    String? newAvatarPath;
 
     if (firstName != null) {
       updates['first_name'] = firstName;
@@ -65,29 +67,53 @@ class SupabaseProfileService implements ProfileService {
     }
 
     if (avatarBytes != null) {
+      final currentProfile = await getProfile(userId);
+      oldAvatarPath = currentProfile.avatarPath;
+
       final extension = (avatarFileExtension?.trim().isNotEmpty ?? false)
           ? avatarFileExtension!.trim().toLowerCase()
           : 'png';
       final avatarFolder = _toStorageSafeFolder(userId);
-      final avatarPath =
+      newAvatarPath =
           '$avatarFolder/${DateTime.now().millisecondsSinceEpoch}.$extension';
 
       await Supabase.instance.client.storage
           .from(_avatarsBucket)
           .uploadBinary(
-            avatarPath,
+            newAvatarPath,
             avatarBytes,
             fileOptions: const FileOptions(cacheControl: '3600', upsert: true),
           );
 
-      updates['avatar_path'] = avatarPath;
+      updates['avatar_path'] = newAvatarPath;
     }
 
-    if (updates.isNotEmpty) {
-      await Supabase.instance.client
-          .from(_profilesTable)
-          .update(updates)
-          .eq('user_id', userId);
+    try {
+      if (updates.isNotEmpty) {
+        await Supabase.instance.client
+            .from(_profilesTable)
+            .update(updates)
+            .eq('user_id', userId);
+      }
+    } catch (e, s) {
+      if (newAvatarPath != null) {
+        await _deleteAvatarBestEffort(
+          newAvatarPath,
+          context: 'rollback after profile update failure',
+        );
+      }
+
+      debugPrint('Failed to update profile: $e $s');
+      rethrow;
+    }
+
+    if (oldAvatarPath != null &&
+        newAvatarPath != null &&
+        oldAvatarPath != newAvatarPath) {
+      await _deleteAvatarBestEffort(
+        oldAvatarPath,
+        context: 'cleanup previous avatar after successful replacement',
+      );
     }
 
     return getProfile(userId);
@@ -95,5 +121,18 @@ class SupabaseProfileService implements ProfileService {
 
   String _toStorageSafeFolder(String userId) {
     return userId.replaceAll(_unsafeFolderChars, '_');
+  }
+
+  Future<void> _deleteAvatarBestEffort(
+    String path, {
+    required String context,
+  }) async {
+    try {
+      await Supabase.instance.client.storage.from(_avatarsBucket).remove([
+        path,
+      ]);
+    } catch (e, s) {
+      debugPrint('Failed to delete avatar ($context): $e $s');
+    }
   }
 }
