@@ -1,17 +1,30 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:pf2e_app/features/auth/services/auth_service.dart';
-import 'package:pf2e_app/locator.dart';
+import 'package:pf2e_app/features/auth/manager/auth_manager.dart';
+import 'package:watch_it/watch_it.dart';
 
 @RoutePage()
-class LoginPage extends StatelessWidget {
-  final void Function(bool success) onResult;
+class LoginPage extends WatchingWidget {
+  final void Function() onLogin;
 
-  const LoginPage({super.key, required this.onResult});
+  const LoginPage({super.key, required this.onLogin});
 
   @override
   Widget build(BuildContext context) {
-    final authService = di<AuthService>();
+    final authManager = di<AuthManager>();
+
+    final credentials = watchValue((AuthManager m) => m.credentials);
+
+    final isLoginRunning = watchValue(
+      (AuthManager m) => m.loginCommand.isRunning,
+    );
+
+    registerHandler(
+      select: (AuthManager m) => m.credentials,
+      handler: (context, credentials, _) {
+        onLogin();
+      },
+    );
 
     return Scaffold(
       body: CustomScrollView(
@@ -23,20 +36,21 @@ class LoginPage extends StatelessWidget {
           ),
           SliverToBoxAdapter(
             child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 16,
-                children: [
-                  Text('Welcome! Please log in.'),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final credentials = await authService.login();
-                      onResult(credentials != null);
-                    },
-                    child: Text('Login'),
-                  ),
-                ],
-              ),
+              child: credentials != null || isLoginRunning
+                  ? CircularProgressIndicator.adaptive()
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 16,
+                      children: [
+                        Text('Welcome! Please log in.'),
+                        FilledButton(
+                          onPressed: () async {
+                            authManager.loginCommand.run();
+                          },
+                          child: Text('Login'),
+                        ),
+                      ],
+                    ),
             ),
           ),
         ],

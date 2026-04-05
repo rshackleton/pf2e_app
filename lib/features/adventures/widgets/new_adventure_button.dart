@@ -26,11 +26,13 @@ class NewAdventureDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        margin: EdgeInsets.all(8),
+        margin: EdgeInsets.all(24),
         child: Material(
           borderRadius: BorderRadius.circular(4),
+          elevation: 8,
+          type: MaterialType.canvas,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(16.0),
             child: NewAdventureForm(),
           ),
         ),
@@ -69,8 +71,9 @@ class _NewAdventureFormState extends State<NewAdventureForm> {
       key: _formKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        spacing: 16,
         children: [
-          Text('Create New Adventure'),
+          Text('Create New Adventure', style: TextStyle(fontSize: 16)),
           TextFormField(
             controller: _controller,
             decoration: InputDecoration(labelText: 'Adventure Name'),
@@ -82,27 +85,33 @@ class _NewAdventureFormState extends State<NewAdventureForm> {
               return null;
             },
           ),
-          SizedBox(height: 16),
-          Row(
+          Flex(
+            direction: Axis.horizontal,
             spacing: 16,
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    di<AdventureManager>().createAdventureCommand.run(
-                      _controller.value.text,
-                    );
-
+              Expanded(
+                flex: 1,
+                child: TextButton(
+                  onPressed: () {
                     Navigator.pop(context);
-                  }
-                },
-                child: Text('Create'),
+                  },
+                  child: Text('Cancel'),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: FilledButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      di<AdventureManager>().createAdventureCommand.run(
+                        _controller.value.text,
+                      );
+
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: Text('Create'),
+                ),
               ),
             ],
           ),

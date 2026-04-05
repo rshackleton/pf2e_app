@@ -28,7 +28,7 @@ class HomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 16,
                 children: [
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: () => context.router.navigate(AdventuresRoute()),
                     child: Text('Go to Adventures'),
                   ),

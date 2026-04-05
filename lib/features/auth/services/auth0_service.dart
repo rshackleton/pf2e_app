@@ -4,14 +4,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pf2e_app/features/auth/services/auth_service.dart';
 
 class Auth0Service implements AuthService {
-  late final Auth0 _auth0;
-  late final String _appScheme;
+  final Auth0 _auth0 = Auth0(
+    dotenv.get('AUTH0_DOMAIN'),
+    dotenv.get('AUTH0_CLIENT_ID'),
+  );
 
-  Future<Auth0Service> init() async {
-    _auth0 = Auth0(dotenv.get('AUTH0_DOMAIN'), dotenv.get('AUTH0_CLIENT_ID'));
-    _appScheme = dotenv.get("AUTH0_SCHEME");
-    return this;
-  }
+  final String _appScheme = dotenv.get("AUTH0_SCHEME");
 
   @override
   Future<Credentials?> login() async {

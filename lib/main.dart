@@ -7,7 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl_standalone.dart';
 import 'package:pf2e_app/app.dart';
-import 'package:pf2e_app/features/auth/services/auth_service.dart';
+import 'package:pf2e_app/features/auth/manager/auth_manager.dart';
 import 'package:pf2e_app/locator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -52,9 +52,10 @@ Future<void> main() async {
     url: sbUrl,
     anonKey: sbKey,
     accessToken: () async {
-      final authService = di<AuthService>();
-      final credentials = await authService.getSession();
-      return credentials?.accessToken;
+      // This is called when a supabase query is triggered, therefore we
+      // can directly access credentials as we would already have initialised
+      final authManager = di<AuthManager>();
+      return authManager.credentials.value?.accessToken;
     },
   );
 

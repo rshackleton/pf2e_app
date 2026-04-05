@@ -163,11 +163,11 @@ class HomeRoute extends _i7.PageRouteInfo<void> {
 class LoginRoute extends _i7.PageRouteInfo<LoginRouteArgs> {
   LoginRoute({
     _i8.Key? key,
-    required void Function(bool) onResult,
+    required void Function() onLogin,
     List<_i7.PageRouteInfo>? children,
   }) : super(
          LoginRoute.name,
-         args: LoginRouteArgs(key: key, onResult: onResult),
+         args: LoginRouteArgs(key: key, onLogin: onLogin),
          initialChildren: children,
        );
 
@@ -177,21 +177,21 @@ class LoginRoute extends _i7.PageRouteInfo<LoginRouteArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<LoginRouteArgs>();
-      return _i5.LoginPage(key: args.key, onResult: args.onResult);
+      return _i5.LoginPage(key: args.key, onLogin: args.onLogin);
     },
   );
 }
 
 class LoginRouteArgs {
-  const LoginRouteArgs({this.key, required this.onResult});
+  const LoginRouteArgs({this.key, required this.onLogin});
 
   final _i8.Key? key;
 
-  final void Function(bool) onResult;
+  final void Function() onLogin;
 
   @override
   String toString() {
-    return 'LoginRouteArgs{key: $key, onResult: $onResult}';
+    return 'LoginRouteArgs{key: $key, onLogin: $onLogin}';
   }
 
   @override
