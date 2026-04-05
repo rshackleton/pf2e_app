@@ -18,7 +18,7 @@ class Auth0Service implements AuthService {
     try {
       final credentials = await _auth0
           .webAuthentication(scheme: _appScheme)
-          .login(useHTTPS: true);
+          .login(audience: 'https://pf2eapp', useHTTPS: true);
 
       return credentials;
     } catch (e) {

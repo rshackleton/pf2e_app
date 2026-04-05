@@ -54,7 +54,7 @@ Future<void> main() async {
     accessToken: () async {
       final authService = di<AuthService>();
       final credentials = await authService.getSession();
-      return credentials?.idToken;
+      return credentials?.accessToken;
     },
   );
 
