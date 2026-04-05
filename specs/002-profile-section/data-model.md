@@ -7,13 +7,13 @@
   - `first_name` (text, nullable): user-editable first name.
   - `last_name` (text, nullable): user-editable last name.
   - `avatar_path` (text, nullable): path/key for avatar object in Supabase Storage.
-  - `avatar_url` (text, nullable): resolved delivery URL or signed URL reference.
   - `created_at` (timestamp with time zone, not null, default now).
   - `updated_at` (timestamp with time zone, not null, default now).
 - Validation rules:
   - `user_id` MUST be non-empty and unique.
   - At least one of `first_name` / `last_name` MAY be null, but UI fallback text is required.
   - `avatar_path` MUST reference an object in the `avatars` bucket when present.
+  - Any runtime `avatar_url` MUST be derived from `avatar_path` and is not persisted as a canonical data column.
 - Relationships:
   - One-to-one with authenticated principal identity (`Auth0 sub`).
 

@@ -16,12 +16,6 @@ manager/service boundaries, and route/auth guard behavior.
 
 ## Technical Context
 
-<!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
--->
-
 **Language/Version**: Dart 3.11 / Flutter stable (adjust only if the feature requires a newer pinned version)
 **Primary Dependencies**: Flutter, auto_route, get_it, watch_it, command_it, listen_it, plus feature-specific integrations such as Auth0 or Supabase
 **Storage**: Supabase Postgres (`public.profiles`) + Supabase Storage (`avatars` bucket)
@@ -57,11 +51,6 @@ specs/002-profile-section/
 ```
 
 ### Source Code (repository root)
-<!--
-  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Expand the tree with the exact feature directories you will
-  touch and remove entries that are not relevant.
--->
 
 ```text
 lib/
@@ -79,40 +68,43 @@ lib/
     │   ├── manager/
     │   ├── services/
     │   ├── widgets/
-    │   └── [pages].dart
+    │   ├── adventures_page.dart
+    │   ├── adventure_detail_root_page.dart
+    │   ├── adventure_detail_home_page.dart
+    │   └── new_adventure_page.dart
     └── profile/
-      └── profile_page.dart
+        └── profile_page.dart
 
 test/
-  ├── profile_flow_test.dart
-  ├── auth_flow_test.dart
+├── profile_flow_test.dart
+├── auth_flow_test.dart
 ├── test_helpers.dart
 ├── test_mocks.dart
 └── test_mocks.mocks.dart
 ```
 
-  **Structure Decision**: Keep all profile UX and state in `lib/features/profile/`,
-  extend auth/profile services/managers under feature folders, and touch `lib/locator.dart`
-  for registrations. Keep router changes minimal unless new edit route is required.
-  Regenerate `router.gr.dart` and Mockito outputs only if route signatures or mocked interfaces change.
+**Structure Decision**: Keep all profile UX and state in `lib/features/profile/`,
+extend auth/profile services/managers under feature folders, and touch `lib/locator.dart`
+for registrations. Keep router changes minimal unless new edit route is required.
+Regenerate `router.gr.dart` and Mockito outputs only if route signatures or mocked interfaces change.
 
-  ## Phase 0 Research Output
+## Phase 0 Research Output
 
-  See [research.md](./research.md). All prior clarifications and integration decisions are resolved with no remaining NEEDS CLARIFICATION markers.
+See [research.md](./research.md). All prior clarifications and integration decisions are resolved with no open ambiguity markers.
 
-  ## Phase 1 Design Output
+## Phase 1 Design Output
 
-  - Data model: [data-model.md](./data-model.md)
-  - Contracts: [contracts/supabase-profile-contract.md](./contracts/supabase-profile-contract.md), [contracts/auth0-registration-action-contract.md](./contracts/auth0-registration-action-contract.md)
-  - Quickstart: [quickstart.md](./quickstart.md)
+- Data model: [data-model.md](./data-model.md)
+- Contracts: [contracts/supabase-profile-contract.md](./contracts/supabase-profile-contract.md), [contracts/auth0-registration-action-contract.md](./contracts/auth0-registration-action-contract.md)
+- Quickstart: [quickstart.md](./quickstart.md)
 
-  ## Post-Design Constitution Check
+## Post-Design Constitution Check
 
-  - [x] Feature-first placement remains intact (`lib/features/profile`, `lib/features/auth`, DI/router touchpoints).
-  - [x] Manager/service boundaries remain explicit and testable.
-  - [x] Verification plan covers user stories and integration constraints.
-  - [x] Auth/routing/scope boundaries remain explicit and guarded.
-  - [x] Code generation impact is identified with rerun criteria.
+- [x] Feature-first placement remains intact (`lib/features/profile`, `lib/features/auth`, DI/router touchpoints).
+- [x] Manager/service boundaries remain explicit and testable.
+- [x] Verification plan covers user stories and integration constraints.
+- [x] Auth/routing/scope boundaries remain explicit and guarded.
+- [x] Code generation impact is identified with rerun criteria.
 
 ## Complexity Tracking
 

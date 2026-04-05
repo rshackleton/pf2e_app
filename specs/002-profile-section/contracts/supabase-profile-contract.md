@@ -10,7 +10,6 @@ Defines the data contract between Flutter profile services and Supabase resource
   - `first_name text null`
   - `last_name text null`
   - `avatar_path text null`
-  - `avatar_url text null`
   - `created_at timestamptz not null default now()`
   - `updated_at timestamptz not null default now()`
 
@@ -22,11 +21,11 @@ Defines the data contract between Flutter profile services and Supabase resource
 - Update profile:
   - Input: partial profile payload + optional avatar reference.
   - Behavior: update only provided fields; preserve non-updated fields.
-  - Output: updated profile row projection.
+  - Output: updated profile row projection with `avatar_path`; app may derive a runtime `avatar_url` for display.
 
 ## Storage Contract: `avatars` bucket
 - Object path convention: `<user_id>/<timestamp>.<extension>`.
-- Profile row must store a stable `avatar_path` and optionally resolved `avatar_url`.
+- Profile row must store canonical `avatar_path`; any `avatar_url` used by the app is derived from the stored path.
 - For overwrite/upsert behavior, policies must permit `INSERT`, `SELECT`, and `UPDATE` on `storage.objects`.
 
 ## Security / RLS Contract

@@ -17,19 +17,6 @@
 
 ## User Scenarios & Testing *(mandatory)*
 
-<!--
-  IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
-  Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
-  you should still have a viable MVP (Minimum Viable Product) that delivers value.
-
-  Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
-  Think of each story as a standalone slice of functionality that can be:
-  - Developed independently
-  - Tested independently
-  - Deployed independently
-  - Demonstrated to users independently
--->
-
 ### User Story 1 - View Expanded Profile Details (Priority: P1)
 
 As a signed-in user, I can open my profile and see my first name, last name, and avatar so I can confirm my personal account details are represented correctly.
@@ -91,11 +78,6 @@ As a returning user, I can see updated profile details after my account informat
 
 ### Edge Cases
 
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right edge cases.
--->
-
 - User has only one name part available (first or last), and the system must still display a coherent name presentation.
 - Avatar URL is invalid or temporarily unavailable, and the system must show a default avatar state without crashing.
 - Profile data source is temporarily unavailable while loading, and the user must see a non-blocking error state with retry capability.
@@ -104,11 +86,6 @@ As a returning user, I can see updated profile details after my account informat
 - User updates only one field (for example, avatar only), and the system must apply that change without overwriting untouched profile fields.
 
 ## Requirements *(mandatory)*
-
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right functional requirements.
--->
 
 ### Functional Requirements
 
@@ -128,14 +105,10 @@ As a returning user, I can see updated profile details after my account informat
 - **FR-014**: System MUST use Auth0 `sub` as the unique profile linkage key (`user_id`) for Supabase profile records.
 - **FR-015**: System MUST provision a linked Supabase profile record during Auth0 registration via an Auth0 Action.
 - **FR-016**: System MUST treat missing linked profile records after successful authentication as an integration error state with recoverable guidance.
-- **FR-017**: System MUST store avatar media in Supabase Storage and persist only its URL/path reference in the linked profile record.
+- **FR-017**: System MUST store avatar media in Supabase Storage and persist `avatar_path` as the canonical avatar reference in the linked profile record.
+- **FR-018**: System MUST derive any display `avatar_url` from `avatar_path` at read time instead of treating `avatar_url` as an authoritative stored source.
 
 ## Affected Areas & Constraints *(mandatory)*
-
-<!--
-  ACTION REQUIRED: Capture repo-specific implementation constraints so the plan
-  can satisfy the constitution without rediscovering impact later.
--->
 
 - **Affected Feature Modules**: Auth feature and profile feature surfaces.
 - **Manager/Service Boundary Impact**: Profile-facing state presentation and edit flow will be managed in manager-layer behavior; identity data retrieval and update operations remain in service-layer boundaries.
@@ -144,7 +117,7 @@ As a returning user, I can see updated profile details after my account informat
 - **External Integration Impact**: Supabase becomes the primary store for editable profile details and must remain linked to the authenticated Auth0 user identity.
 - **Identity Linkage Constraint**: Supabase profile ownership is keyed by Auth0 `sub` as the canonical immutable identity reference.
 - **Provisioning Constraint**: Linked Supabase profile records are provisioned in Auth0 registration flow through an Auth0 Action rather than opportunistic in-app creation.
-- **Avatar Storage Constraint**: Avatar assets are stored in Supabase Storage; profile rows store a stable avatar reference string.
+- **Avatar Storage Constraint**: Avatar assets are stored in Supabase Storage; profile rows store canonical `avatar_path`, and display URLs are derived from that path.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -156,11 +129,6 @@ As a returning user, I can see updated profile details after my account informat
 - **Profile Avatar Asset**: Represents a user avatar object stored in Supabase Storage and referenced by URL/path from the linked profile record.
 
 ## Success Criteria *(mandatory)*
-
-<!--
-  ACTION REQUIRED: Define measurable success criteria.
-  These must be technology-agnostic and measurable.
--->
 
 ### Measurable Outcomes
 
@@ -174,14 +142,9 @@ As a returning user, I can see updated profile details after my account informat
 - **SC-008**: 100% of linked profile reads and writes resolve by Auth0 `sub` without ambiguous or duplicate user linkage.
 - **SC-009**: At least 99% of successful Auth0 registrations result in a linked Supabase profile record before first app profile access.
 - **SC-010**: 100% of successful avatar updates store media in Supabase Storage and persist a retrievable avatar reference in the linked profile record.
+- **SC-011**: 100% of profile avatar renders in the app are derived from persisted `avatar_path` without path/URL mismatch.
 
 ## Assumptions
-
-<!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right assumptions based on reasonable defaults
-  chosen when the feature description did not specify certain details.
--->
 
 - Users are already authenticated before accessing the profile section.
 - Supabase profile records are created during Auth0 registration using an Auth0 Action.
@@ -191,11 +154,6 @@ As a returning user, I can see updated profile details after my account informat
 - Existing authentication and session gating behavior remains the source of access control for profile visibility.
 
 ## Verification Strategy *(mandatory)*
-
-<!--
-  ACTION REQUIRED: Name the automated and manual verification expected before
-  merge. If no automated test will be added, justify that choice explicitly.
--->
 
 - **Automated Coverage**: Update profile and auth flow tests to verify populated profile display, fallback rendering for missing fields, authenticated-only visibility, recoverable error/retry behavior, valid profile updates, invalid update validation handling, linked Supabase persistence/retrieval, and avatar Storage-reference consistency.
 - **Manual Validation**: Validate profile presentation and update flows with representative accounts for complete data, partial data, missing avatar, and invalid input; confirm sign-out removes profile visibility and that saved updates remain linked to the same authenticated user.
