@@ -12,6 +12,7 @@ import 'test_mocks.mocks.dart';
 void main() {
   late MockAuthService mockAuthService;
   late MockAdventureService mockAdventureService;
+  late MockProfileService mockProfileService;
 
   setUpAll(() async {
     await configureTestDependencies();
@@ -20,10 +21,12 @@ void main() {
   setUp(() {
     mockAuthService = MockAuthService();
     mockAdventureService = MockAdventureService();
+    mockProfileService = MockProfileService();
 
     registerServiceMocks(
       authService: mockAuthService,
       adventureService: mockAdventureService,
+      profileService: mockProfileService,
     );
   });
 

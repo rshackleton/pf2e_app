@@ -33,3 +33,7 @@
 
 - Validation iteration 1: all checklist items pass.
 - No unresolved clarifications remain.
+- Implementation verification (2026-04-05):
+	- `flutter analyze` passed.
+	- `flutter test test/profile_flow_test.dart` passed.
+	- `flutter test test/auth_flow_test.dart test/adventure_flow_test.dart` passed.

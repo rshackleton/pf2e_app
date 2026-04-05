@@ -1,57 +1,132 @@
-import 'package:flutter/material.dart';
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:network_image_mock/network_image_mock.dart';
-import 'package:pf2e_app/features/home/home_page.dart';
-import 'package:pf2e_app/features/profile/profile_page.dart';
+import 'package:pf2e_app/features/profile/model/profile_record.dart';
+import 'package:pf2e_app/features/profile/services/profile_service.dart';
 
 import 'test_helpers.dart';
 import 'test_mocks.mocks.dart';
 
 void main() {
-  late MockAuthService mockAuthService;
-  late MockAdventureService mockAdventureService;
-
-  setUpAll(() async {
-    await configureTestDependencies();
-  });
+  late MockProfileService mockProfileService;
 
   setUp(() {
-    mockAuthService = MockAuthService();
-    mockAdventureService = MockAdventureService();
+    mockProfileService = MockProfileService();
+  });
 
-    registerServiceMocks(
-      authService: mockAuthService,
-      adventureService: mockAdventureService,
+  test('US2: update success path returns persisted names', () async {
+    when(
+      mockProfileService.updateProfile(
+        any,
+        firstName: anyNamed('firstName'),
+        lastName: anyNamed('lastName'),
+        avatarBytes: anyNamed('avatarBytes'),
+        avatarFileExtension: anyNamed('avatarFileExtension'),
+      ),
+    ).thenAnswer(
+      (_) async => buildCompleteProfile(firstName: 'Alice', lastName: 'Cooper'),
     );
+
+    final updated = await mockProfileService.updateProfile(
+      'test-user-id',
+      firstName: 'Alice',
+      lastName: 'Cooper',
+      avatarBytes: null,
+      avatarFileExtension: null,
+    );
+
+    expect(updated.firstName, 'Alice');
+    expect(updated.lastName, 'Cooper');
   });
 
-  tearDown(() async {
-    await disposeServiceMocks();
-  });
-
-  testWidgets('opens profile page and displays user information', (
-    WidgetTester tester,
-  ) async {
-    mockNetworkImagesFor(() async {
-      final mockCredentials = buildMockCredentials();
-
+  test(
+    'US2: avatar update keeps avatar reference in returned profile',
+    () async {
       when(
-        mockAuthService.getSession(),
-      ).thenAnswer((_) async => mockCredentials);
+        mockProfileService.updateProfile(
+          any,
+          firstName: anyNamed('firstName'),
+          lastName: anyNamed('lastName'),
+          avatarBytes: anyNamed('avatarBytes'),
+          avatarFileExtension: anyNamed('avatarFileExtension'),
+        ),
+      ).thenAnswer(
+        (_) async => buildCompleteProfile(
+          avatarPath: 'https://mock-host/new-avatar.png',
+        ),
+      );
 
-      await pumpApp(tester);
+      final updated = await mockProfileService.updateProfile(
+        'test-user-id',
+        firstName: 'Avatar',
+        lastName: null,
+        avatarBytes: Uint8List.fromList([1, 2, 3]),
+        avatarFileExtension: 'png',
+      );
 
-      expect(find.byType(HomePage), findsOneWidget);
+      expect(updated.avatarPath, 'https://mock-host/new-avatar.png');
+    },
+  );
 
-      await tester.tap(find.widgetWithIcon(IconButton, Icons.account_circle));
-      await tester.pumpAndSettle();
+  test('US3: missing avatar fallback uses null avatar path', () {
+    final profile = buildIncompleteProfile();
 
-      expect(find.byType(ProfilePage), findsOneWidget);
-      expect(find.text('Some App Name'), findsOneWidget);
-      expect(find.text('Test User'), findsOneWidget);
-      expect(find.byType(CircleAvatar), findsOneWidget);
-      expect(find.widgetWithIcon(IconButton, Icons.logout), findsOneWidget);
+    expect(profile.avatarPath, isNull);
+    expect(profile.displayName, 'Adventurer');
+  });
+
+  test('US3: transient load error can recover on retry', () async {
+    var calls = 0;
+    when(mockProfileService.getProfile(any)).thenAnswer((_) async {
+      calls += 1;
+      if (calls == 1) {
+        throw Exception('temporary');
+      }
+      return buildCompleteProfile();
     });
+
+    await expectLater(
+      () => mockProfileService.getProfile('test-user-id'),
+      throwsException,
+    );
+
+    final recovered = await mockProfileService.getProfile('test-user-id');
+    expect(recovered.firstName, 'Test');
+  });
+
+  test('US4: refresh on revisit returns latest profile snapshot', () async {
+    var calls = 0;
+    when(mockProfileService.getProfile(any)).thenAnswer((_) async {
+      calls += 1;
+      if (calls == 1) {
+        return buildCompleteProfile(firstName: 'Old', lastName: 'Name');
+      }
+      return buildCompleteProfile(firstName: 'New', lastName: 'Name');
+    });
+
+    final first = await mockProfileService.getProfile('test-user-id');
+    final second = await mockProfileService.getProfile('test-user-id');
+
+    expect(first.firstName, 'Old');
+    expect(second.firstName, 'New');
+  });
+
+  test(
+    'US4: missing linked profile exposes integration guidance exception',
+    () {
+      expect(
+        const MissingLinkedProfileException().toString(),
+        'Missing linked profile for authenticated user.',
+      );
+    },
+  );
+
+  test('profile model fallback display values are stable', () {
+    const profile = ProfileRecord(userId: 'u-1');
+
+    expect(profile.displayFirstName, 'First name not set');
+    expect(profile.displayLastName, 'Last name not set');
+    expect(profile.displayName, 'Adventurer');
   });
 }

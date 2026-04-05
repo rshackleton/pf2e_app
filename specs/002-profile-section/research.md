@@ -36,14 +36,14 @@
   - Service role from client: rejected due to security boundary violation.
 
 ## Decision 6: Keep Flutter architecture boundaries (manager owns state, services own I/O)
-- Decision: Implement profile view/edit state in manager; Auth0/Supabase calls in services; wire via `get_it` registrations.
-- Rationale: Required by project constitution and existing architecture conventions.
-- Alternatives considered:
   - Widget-direct Supabase/Auth0 calls: rejected as it violates manager/service separation and testability.
   - Introduce a new state framework: rejected as unnecessary for this feature scope.
 
 ## Decision 7: Verification strategy includes flow + integration-path testing
-- Decision: Add/extend profile and auth flow tests for view/edit/fallback/error and linkage guarantees.
-- Rationale: Constitution mandates verification before merge and explicit manual fallback only when automation is infeasible.
-- Alternatives considered:
   - Manual-only verification: rejected due to regression risk and non-compliance with constitution.
+
+## Security Sanity Pass (2026-04-05)
+- Confirmed `public.profiles` uses owner-scoped RLS policies for `SELECT`, `INSERT`, and `UPDATE` keyed by JWT `sub`.
+- Confirmed `storage.objects` policies for `avatars` include `SELECT`, `INSERT`, and `UPDATE`, which is required for upload upsert behavior.
+- Confirmed Auth0 Action uses server-side service role secret and does not rely on user-editable metadata for authorization decisions.
+- Confirmed client-side profile service uses publishable key auth path and never injects service role credentials.

@@ -11,6 +11,17 @@ Defines the behavior of the Auth0 Action responsible for ensuring a linked Supab
   - `user.sub` (canonical identity key)
   - Optional metadata candidates for bootstrap values (first/last name, avatar hints)
 
+## Deployment Inputs
+- Runtime: Auth0 Action Node.js runtime (supported LTS)
+- Secrets:
+  - `SUPABASE_URL`
+  - `SUPABASE_SECRET_KEY`
+- Trigger: `post-user-registration`
+
+## Deployment Outputs
+- Success telemetry log entry indicates profile upsert path executed.
+- For failed upsert, Action log includes Supabase status and response payload snippet.
+
 ## Output Contract
 - On success:
   - Supabase `public.profiles` contains row keyed by `user_id = user.sub`.

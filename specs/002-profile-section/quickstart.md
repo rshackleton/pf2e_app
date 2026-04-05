@@ -48,3 +48,14 @@ Manual validation checklist:
 - Automated tests pass and cover primary user stories.
 - RLS and storage policies verified against owner-only access.
 - No unresolved constitution gate failures.
+
+## 7. Rollout Notes
+1. Deploy Supabase migrations for `profiles` schema and `avatars` storage policies before app rollout.
+2. Configure Auth0 Action secrets (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`) in each environment.
+3. Validate profile edit flow in staging with a newly registered Auth0 user and an existing user.
+4. Monitor Action logs and Supabase API logs for provisioning failures during first rollout window.
+
+## 8. Verification Outcomes (2026-04-05)
+- `flutter analyze` completed with no issues.
+- `flutter test test/profile_flow_test.dart` passed.
+- `flutter test test/auth_flow_test.dart test/adventure_flow_test.dart` passed.
