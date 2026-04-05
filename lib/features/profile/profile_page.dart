@@ -1,10 +1,14 @@
+import 'dart:typed_data';
+
 import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:pf2e_app/features/auth/manager/auth_manager.dart';
 import 'package:pf2e_app/features/auth/widgets/logout_widget.dart';
 import 'package:pf2e_app/features/profile/manager/profile_manager.dart';
 import 'package:pf2e_app/features/profile/model/profile_record.dart';
+import 'package:pf2e_app/features/profile/widgets/profile_avatar_view.dart';
 import 'package:watch_it/watch_it.dart';
 
 @RoutePage()
@@ -42,14 +46,17 @@ class ProfilePage extends WatchingWidget {
                 viewState: viewState,
                 isSaving: isSaving,
                 onRetry: profileManager.retryLoad,
-                onSave: (firstName, lastName) {
-                  profileManager.updateProfileCommand.run(
-                    ProfileUpdateInput(
-                      firstName: firstName,
-                      lastName: lastName,
-                    ),
-                  );
-                },
+                onSave:
+                    (firstName, lastName, avatarBytes, avatarFileExtension) {
+                      profileManager.updateProfileCommand.run(
+                        ProfileUpdateInput(
+                          firstName: firstName,
+                          lastName: lastName,
+                          avatarBytes: avatarBytes,
+                          avatarFileExtension: avatarFileExtension,
+                        ),
+                      );
+                    },
               ),
             ),
           ),
@@ -64,7 +71,13 @@ class _ProfileContent extends StatefulWidget {
   final ProfileViewState viewState;
   final bool isSaving;
   final VoidCallback onRetry;
-  final void Function(String firstName, String lastName) onSave;
+  final void Function(
+    String firstName,
+    String lastName,
+    Uint8List? avatarBytes,
+    String? avatarFileExtension,
+  )
+  onSave;
 
   const _ProfileContent({
     required this.user,
@@ -81,6 +94,10 @@ class _ProfileContent extends StatefulWidget {
 class _ProfileContentState extends State<_ProfileContent> {
   late final TextEditingController _firstNameController;
   late final TextEditingController _lastNameController;
+  final _imagePicker = ImagePicker();
+
+  Uint8List? _selectedAvatarBytes;
+  String? _selectedAvatarExtension;
 
   @override
   void initState() {
@@ -131,27 +148,49 @@ class _ProfileContentState extends State<_ProfileContent> {
     }
 
     final profile = widget.viewState.profile;
-    final avatarUri =
-        profile?.avatarPath ?? widget.user?.pictureUrl?.toString();
-
+    final avatarUri = profile?.avatarPath;
     return Column(
       spacing: 16,
       children: [
-        CircleAvatar(
-          backgroundImage: avatarUri != null ? NetworkImage(avatarUri) : null,
-          radius: 64,
-          child: avatarUri == null ? const Icon(Icons.person, size: 48) : null,
+        _selectedAvatarBytes != null
+            ? CircleAvatar(
+                backgroundImage: MemoryImage(_selectedAvatarBytes!),
+                radius: 64,
+              )
+            : ProfileAvatarView(
+                avatarUrl: avatarUri,
+                firstName: profile?.firstName,
+                lastName: profile?.lastName,
+              ),
+        OutlinedButton.icon(
+          onPressed: widget.isSaving
+              ? null
+              : () async {
+                  final picked = await _imagePicker.pickImage(
+                    source: ImageSource.gallery,
+                    maxWidth: 1024,
+                    maxHeight: 1024,
+                    imageQuality: 85,
+                  );
+
+                  if (picked == null) {
+                    return;
+                  }
+
+                  final bytes = await picked.readAsBytes();
+                  final dotIndex = picked.name.lastIndexOf('.');
+                  final extension = dotIndex >= 0
+                      ? picked.name.substring(dotIndex + 1).toLowerCase()
+                      : 'png';
+
+                  setState(() {
+                    _selectedAvatarBytes = bytes;
+                    _selectedAvatarExtension = extension;
+                  });
+                },
+          icon: const Icon(Icons.photo_library),
+          label: const Text('Change Avatar'),
         ),
-        FittedBox(
-          child: Text(
-            profile?.displayName ?? widget.user?.name ?? 'Adventurer',
-            style: const TextStyle(fontSize: 18),
-          ),
-        ),
-        Text(
-          'First name: ${profile?.displayFirstName ?? 'First name not set'}',
-        ),
-        Text('Last name: ${profile?.displayLastName ?? 'Last name not set'}'),
         TextField(
           controller: _firstNameController,
           decoration: const InputDecoration(labelText: 'First Name'),
@@ -166,6 +205,8 @@ class _ProfileContentState extends State<_ProfileContent> {
               : () => widget.onSave(
                   _firstNameController.text,
                   _lastNameController.text,
+                  _selectedAvatarBytes,
+                  _selectedAvatarExtension,
                 ),
           child: Text(widget.isSaving ? 'Saving...' : 'Save Profile'),
         ),
