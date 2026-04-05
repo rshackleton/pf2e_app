@@ -67,13 +67,13 @@ Adventure buildAdventure({
   required int id,
   required String name,
   DateTime? createdAt,
-  String createdBy = 'test-user-id',
+  String userId = 'test-user-id',
 }) {
   return Adventure(
     id: id,
     name: name,
     createdAt: createdAt ?? DateTime(2026, 1, 1),
-    createdBy: createdBy,
+    userId: userId,
   );
 }
 

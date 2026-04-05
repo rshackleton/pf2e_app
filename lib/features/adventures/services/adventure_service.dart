@@ -5,20 +5,20 @@ class Adventure {
   final int id;
   final String name;
   final DateTime createdAt;
-  final String createdBy;
+  final String userId;
 
   Adventure({
     required this.id,
     required this.name,
     required this.createdAt,
-    required this.createdBy,
+    required this.userId,
   });
 
   factory Adventure.fromJson(Map<String, dynamic> json) {
     return Adventure(
       id: json['id'],
       createdAt: DateTime.parse(json['created_at']),
-      createdBy: json['created_by'],
+      userId: json['user_id'],
       name: json['name'],
     );
   }
