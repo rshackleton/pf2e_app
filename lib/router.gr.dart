@@ -9,22 +9,23 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i7;
-import 'package:flutter/material.dart' as _i8;
+import 'package:auto_route/auto_route.dart' as _i8;
+import 'package:flutter/material.dart' as _i9;
 import 'package:pf2e_app/features/adventures/adventure_detail_home_page.dart'
     as _i1;
 import 'package:pf2e_app/features/adventures/adventure_detail_root_page.dart'
     as _i2;
 import 'package:pf2e_app/features/adventures/adventures_page.dart' as _i3;
+import 'package:pf2e_app/features/adventures/new_adventure_page.dart' as _i6;
 import 'package:pf2e_app/features/home/home_page.dart' as _i4;
 import 'package:pf2e_app/features/login/login_page.dart' as _i5;
-import 'package:pf2e_app/features/profile/profile_page.dart' as _i6;
+import 'package:pf2e_app/features/profile/profile_page.dart' as _i7;
 
 /// generated route for
 /// [_i1.AdventureDetailHomePage]
 class AdventureDetailHomeRoute
-    extends _i7.PageRouteInfo<AdventureDetailHomeRouteArgs> {
-  AdventureDetailHomeRoute({_i8.Key? key, List<_i7.PageRouteInfo>? children})
+    extends _i8.PageRouteInfo<AdventureDetailHomeRouteArgs> {
+  AdventureDetailHomeRoute({_i9.Key? key, List<_i8.PageRouteInfo>? children})
     : super(
         AdventureDetailHomeRoute.name,
         args: AdventureDetailHomeRouteArgs(key: key),
@@ -33,7 +34,7 @@ class AdventureDetailHomeRoute
 
   static const String name = 'AdventureDetailHomeRoute';
 
-  static _i7.PageInfo page = _i7.PageInfo(
+  static _i8.PageInfo page = _i8.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -51,7 +52,7 @@ class AdventureDetailHomeRoute
 class AdventureDetailHomeRouteArgs {
   const AdventureDetailHomeRouteArgs({this.key});
 
-  final _i8.Key? key;
+  final _i9.Key? key;
 
   @override
   String toString() {
@@ -72,11 +73,11 @@ class AdventureDetailHomeRouteArgs {
 /// generated route for
 /// [_i2.AdventureDetailRootPage]
 class AdventureDetailRootRoute
-    extends _i7.PageRouteInfo<AdventureDetailRootRouteArgs> {
+    extends _i8.PageRouteInfo<AdventureDetailRootRouteArgs> {
   AdventureDetailRootRoute({
-    _i8.Key? key,
+    _i9.Key? key,
     required int adventureId,
-    List<_i7.PageRouteInfo>? children,
+    List<_i8.PageRouteInfo>? children,
   }) : super(
          AdventureDetailRootRoute.name,
          args: AdventureDetailRootRouteArgs(key: key, adventureId: adventureId),
@@ -86,7 +87,7 @@ class AdventureDetailRootRoute
 
   static const String name = 'AdventureDetailRootRoute';
 
-  static _i7.PageInfo page = _i7.PageInfo(
+  static _i8.PageInfo page = _i8.PageInfo(
     name,
     builder: (data) {
       final pathParams = data.inheritedPathParams;
@@ -106,7 +107,7 @@ class AdventureDetailRootRoute
 class AdventureDetailRootRouteArgs {
   const AdventureDetailRootRouteArgs({this.key, required this.adventureId});
 
-  final _i8.Key? key;
+  final _i9.Key? key;
 
   final int adventureId;
 
@@ -128,13 +129,13 @@ class AdventureDetailRootRouteArgs {
 
 /// generated route for
 /// [_i3.AdventuresPage]
-class AdventuresRoute extends _i7.PageRouteInfo<void> {
-  const AdventuresRoute({List<_i7.PageRouteInfo>? children})
+class AdventuresRoute extends _i8.PageRouteInfo<void> {
+  const AdventuresRoute({List<_i8.PageRouteInfo>? children})
     : super(AdventuresRoute.name, initialChildren: children);
 
   static const String name = 'AdventuresRoute';
 
-  static _i7.PageInfo page = _i7.PageInfo(
+  static _i8.PageInfo page = _i8.PageInfo(
     name,
     builder: (data) {
       return const _i3.AdventuresPage();
@@ -144,13 +145,13 @@ class AdventuresRoute extends _i7.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.HomePage]
-class HomeRoute extends _i7.PageRouteInfo<void> {
-  const HomeRoute({List<_i7.PageRouteInfo>? children})
+class HomeRoute extends _i8.PageRouteInfo<void> {
+  const HomeRoute({List<_i8.PageRouteInfo>? children})
     : super(HomeRoute.name, initialChildren: children);
 
   static const String name = 'HomeRoute';
 
-  static _i7.PageInfo page = _i7.PageInfo(
+  static _i8.PageInfo page = _i8.PageInfo(
     name,
     builder: (data) {
       return const _i4.HomePage();
@@ -160,11 +161,11 @@ class HomeRoute extends _i7.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i5.LoginPage]
-class LoginRoute extends _i7.PageRouteInfo<LoginRouteArgs> {
+class LoginRoute extends _i8.PageRouteInfo<LoginRouteArgs> {
   LoginRoute({
-    _i8.Key? key,
+    _i9.Key? key,
     required void Function() onLogin,
-    List<_i7.PageRouteInfo>? children,
+    List<_i8.PageRouteInfo>? children,
   }) : super(
          LoginRoute.name,
          args: LoginRouteArgs(key: key, onLogin: onLogin),
@@ -173,7 +174,7 @@ class LoginRoute extends _i7.PageRouteInfo<LoginRouteArgs> {
 
   static const String name = 'LoginRoute';
 
-  static _i7.PageInfo page = _i7.PageInfo(
+  static _i8.PageInfo page = _i8.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<LoginRouteArgs>();
@@ -185,7 +186,7 @@ class LoginRoute extends _i7.PageRouteInfo<LoginRouteArgs> {
 class LoginRouteArgs {
   const LoginRouteArgs({this.key, required this.onLogin});
 
-  final _i8.Key? key;
+  final _i9.Key? key;
 
   final void Function() onLogin;
 
@@ -206,17 +207,33 @@ class LoginRouteArgs {
 }
 
 /// generated route for
-/// [_i6.ProfilePage]
-class ProfileRoute extends _i7.PageRouteInfo<void> {
-  const ProfileRoute({List<_i7.PageRouteInfo>? children})
+/// [_i6.NewAdventurePage]
+class NewAdventureRoute extends _i8.PageRouteInfo<void> {
+  const NewAdventureRoute({List<_i8.PageRouteInfo>? children})
+    : super(NewAdventureRoute.name, initialChildren: children);
+
+  static const String name = 'NewAdventureRoute';
+
+  static _i8.PageInfo page = _i8.PageInfo(
+    name,
+    builder: (data) {
+      return const _i6.NewAdventurePage();
+    },
+  );
+}
+
+/// generated route for
+/// [_i7.ProfilePage]
+class ProfileRoute extends _i8.PageRouteInfo<void> {
+  const ProfileRoute({List<_i8.PageRouteInfo>? children})
     : super(ProfileRoute.name, initialChildren: children);
 
   static const String name = 'ProfileRoute';
 
-  static _i7.PageInfo page = _i7.PageInfo(
+  static _i8.PageInfo page = _i8.PageInfo(
     name,
     builder: (data) {
-      return const _i6.ProfilePage();
+      return const _i7.ProfilePage();
     },
   );
 }

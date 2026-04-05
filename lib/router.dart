@@ -14,6 +14,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: HomeRoute.page, initial: true),
     AutoRoute(page: ProfileRoute.page),
     AutoRoute(page: AdventuresRoute.page),
+    AutoRoute(page: NewAdventureRoute.page),
     AutoRoute(
       page: AdventureDetailRootRoute.page,
       children: [AutoRoute(page: AdventureDetailHomeRoute.page, initial: true)],
