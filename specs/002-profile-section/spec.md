@@ -125,7 +125,7 @@ As a returning user, I can see updated profile details after my account informat
 - **FR-011**: System MUST store editable profile data in Supabase.
 - **FR-012**: System MUST link each Supabase profile record to the authenticated Auth0 user identity.
 - **FR-013**: System MUST load profile display values from the linked Supabase profile record when available.
-- **FR-014**: System MUST use Auth0 `sub` as the unique profile linkage key (`auth0_user_id`) for Supabase profile records.
+- **FR-014**: System MUST use Auth0 `sub` as the unique profile linkage key (`user_id`) for Supabase profile records.
 - **FR-015**: System MUST provision a linked Supabase profile record during Auth0 registration via an Auth0 Action.
 - **FR-016**: System MUST treat missing linked profile records after successful authentication as an integration error state with recoverable guidance.
 - **FR-017**: System MUST store avatar media in Supabase Storage and persist only its URL/path reference in the linked profile record.
@@ -152,7 +152,7 @@ As a returning user, I can see updated profile details after my account informat
 - **Profile Load State**: Represents whether profile data is loading, available, or in a recoverable error state.
 - **Profile Update Payload**: Represents editable profile fields submitted by the user, including first name, last name, and avatar.
 - **Profile Update State**: Represents whether a profile update is idle, validating, submitting, successful, or failed with recoverable feedback.
-- **Linked User Profile Record**: Represents the Supabase profile row keyed by `auth0_user_id` (Auth0 `sub`) and containing editable first name, last name, avatar, and audit timestamps.
+- **Linked User Profile Record**: Represents the Supabase profile row keyed by `user_id` (Auth0 `sub`) and containing editable first name, last name, avatar, and audit timestamps.
 - **Profile Avatar Asset**: Represents a user avatar object stored in Supabase Storage and referenced by URL/path from the linked profile record.
 
 ## Success Criteria *(mandatory)*
