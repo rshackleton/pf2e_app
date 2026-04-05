@@ -148,7 +148,8 @@ class _ProfileContentState extends State<_ProfileContent> {
     }
 
     final profile = widget.viewState.profile;
-    final avatarUri = profile?.avatarPath;
+    final avatarPath = profile?.avatarPath;
+
     return Column(
       spacing: 16,
       children: [
@@ -158,7 +159,7 @@ class _ProfileContentState extends State<_ProfileContent> {
                 radius: 64,
               )
             : ProfileAvatarView(
-                avatarUrl: avatarUri,
+                avatarPath: avatarPath,
                 firstName: profile?.firstName,
                 lastName: profile?.lastName,
               ),

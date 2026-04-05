@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfileAvatarView extends StatelessWidget {
-  final String? avatarUrl;
+  final String? avatarPath;
   final String? firstName;
   final String? lastName;
   final double radius;
 
   const ProfileAvatarView({
     super.key,
-    required this.avatarUrl,
+    required this.avatarPath,
     required this.firstName,
     required this.lastName,
     this.radius = 64,
@@ -17,11 +18,14 @@ class ProfileAvatarView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final initials = _computeInitials();
+    final resolvedAvatarUrl = _resolveAvatarUrl(avatarPath);
 
     return CircleAvatar(
-      backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl!) : null,
+      backgroundImage: resolvedAvatarUrl != null
+          ? NetworkImage(resolvedAvatarUrl)
+          : null,
       radius: radius,
-      child: avatarUrl == null
+      child: resolvedAvatarUrl == null
           ? (initials != null
                 ? Text(
                     initials,
@@ -33,6 +37,23 @@ class ProfileAvatarView extends StatelessWidget {
                 : const Icon(Icons.person, size: 48))
           : null,
     );
+  }
+
+  String? _resolveAvatarUrl(String? pathOrUrl) {
+    if (pathOrUrl == null || pathOrUrl.trim().isEmpty) {
+      return null;
+    }
+
+    final value = pathOrUrl.trim();
+    final uri = Uri.tryParse(value);
+    if (uri != null && uri.hasScheme) {
+      return value;
+    }
+
+    final normalizedPath = value.startsWith('/') ? value.substring(1) : value;
+    return Supabase.instance.client.storage
+        .from('avatars')
+        .getPublicUrl(normalizedPath);
   }
 
   String? _computeInitials() {
