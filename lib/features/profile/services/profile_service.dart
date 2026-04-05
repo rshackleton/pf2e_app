@@ -25,6 +25,8 @@ class SupabaseProfileService implements ProfileService {
   static const _profilesTable = 'profiles';
   static const _avatarsBucket = 'avatars';
 
+  static final _unsafeFolderChars = RegExp(r'[^A-Za-z0-9._-]');
+
   @override
   Future<ProfileRecord> getProfile(String userId) async {
     try {
@@ -66,8 +68,9 @@ class SupabaseProfileService implements ProfileService {
       final extension = (avatarFileExtension?.trim().isNotEmpty ?? false)
           ? avatarFileExtension!.trim().toLowerCase()
           : 'png';
+      final avatarFolder = _toStorageSafeFolder(userId);
       final avatarPath =
-          '$userId/${DateTime.now().millisecondsSinceEpoch}.$extension';
+          '$avatarFolder/${DateTime.now().millisecondsSinceEpoch}.$extension';
 
       await Supabase.instance.client.storage
           .from(_avatarsBucket)
@@ -88,5 +91,9 @@ class SupabaseProfileService implements ProfileService {
     }
 
     return getProfile(userId);
+  }
+
+  String _toStorageSafeFolder(String userId) {
+    return userId.replaceAll(_unsafeFolderChars, '_');
   }
 }
