@@ -1,79 +1,58 @@
-import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:network_image_mock/network_image_mock.dart';
-import 'package:pf2e_app/app.dart';
-import 'package:pf2e_app/features/auth/services/auth_service.dart';
 import 'package:pf2e_app/features/home/home_page.dart';
 import 'package:pf2e_app/features/login/login_page.dart';
 import 'package:pf2e_app/features/profile/profile_page.dart';
-import 'package:pf2e_app/locator.dart';
-import 'package:watch_it/watch_it.dart';
 
-// Annotation which generates the auth_service.mocks.dart library and the MockAuthService class.
-@GenerateNiceMocks([MockSpec<AuthService>()])
-import 'widget_test.mocks.dart';
-
-final di = GetIt.instance;
+import 'test_helpers.dart';
+import 'test_mocks.mocks.dart';
 
 void main() {
-  setUpAll(() async {
-    dotenv.loadFromString(
-      envString: '',
-      isOptional: true,
-      mergeWith: {
-        'AUTH0_DOMAIN': 'test-domain',
-        'AUTH0_CLIENT_ID': 'test-client-id',
-        'AUTH0_SCHEME': 'test-scheme',
-        'SUPABASE_URL': 'https://test-supabase-url',
-        'SUPABASE_PUBLISHABLE_KEY': 'test-supabase-key',
-      },
-    );
+  late MockAuthService mockAuthService;
+  late MockAdventureService mockAdventureService;
 
-    configureDependencies();
-    await di.allReady();
+  setUpAll(() async {
+    await configureTestDependencies();
   });
 
   setUp(() {
-    di.pushNewScope();
-    di.registerSingleton<AuthService>(MockAuthService());
+    mockAuthService = MockAuthService();
+    mockAdventureService = MockAdventureService();
+
+    when(mockAdventureService.getAdventures()).thenAnswer((_) async => []);
+    when(mockAdventureService.getAdventure(any)).thenAnswer((_) async => null);
+    when(
+      mockAdventureService.createAdventure(any),
+    ).thenAnswer((_) async => buildAdventure(id: 1, name: 'placeholder'));
+    when(mockAdventureService.deleteAdventure(any)).thenAnswer((_) async {});
+
+    registerServiceMocks(
+      authService: mockAuthService,
+      adventureService: mockAdventureService,
+    );
   });
 
   tearDown(() async {
-    await di.popScope();
+    await disposeServiceMocks();
   });
 
   testWidgets('App authentication flow works as expected', (
     WidgetTester tester,
   ) async {
     mockNetworkImagesFor(() async {
-      final mockAuthService = di<AuthService>() as MockAuthService;
-
       // Arrange: Mock AuthService to simulate no valid session
       when(mockAuthService.getSession()).thenAnswer((_) async => null);
 
       // Act: Load the App widget
-      await tester.pumpWidget(const App());
-      await tester.pumpAndSettle();
+      await pumpApp(tester);
 
       // Assert: Verify login page is displayed
       expect(find.byType(LoginPage), findsOneWidget);
 
       // Arrange: Mock AuthService to simulate successful login
-      final mockCredentials = Credentials(
-        accessToken: 'test-access-token',
-        idToken: 'test-id-token',
-        refreshToken: 'test-refresh-token',
-        tokenType: 'Bearer',
-        expiresAt: DateTime.now().add(const Duration(hours: 1)),
-        user: UserProfile(
-          sub: 'test-user-id',
-          pictureUrl: Uri.dataFromString('https://mock-host/mock-image.png'),
-        ),
-      );
+      final mockCredentials = buildMockCredentials();
 
       when(
         mockAuthService.getSession(),
