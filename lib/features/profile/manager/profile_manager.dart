@@ -15,6 +15,21 @@ class ProfileManager extends ChangeNotifier {
 
   ValueListenable<ProfileViewState> get state => _state;
 
+  ProfileManager() {
+    _authManager.credentials.addListener(_onCredentialsChanged);
+  }
+
+  void _onCredentialsChanged() {
+    if (_authManager.credentials.value == null) {
+      clearSession();
+    }
+  }
+
+  void clearSession() {
+    _profileService.clearCache();
+    _state.value = const ProfileViewState.initial();
+  }
+
   late final loadProfileCommand = Command.createAsyncNoParamNoResult(
     _loadProfile,
     errorFilter: const GlobalIfNoLocalErrorFilter(),
@@ -26,11 +41,25 @@ class ProfileManager extends ChangeNotifier {
         errorFilter: const GlobalIfNoLocalErrorFilter(),
       );
 
-  void refresh() => loadProfileCommand.run();
+  void refresh() => _forceLoadProfile();
 
   void retryLoad() => loadProfileCommand.run();
 
+  Future<void> _forceLoadProfile() async {
+    await _doLoadProfile(force: true);
+  }
+
   Future<void> _loadProfile() async {
+    await _doLoadProfile(force: false);
+  }
+
+  Future<void> _doLoadProfile({required bool force}) async {
+    if (!force &&
+        _state.value.loadState == ProfileLoadState.loaded &&
+        _state.value.profile != null) {
+      return;
+    }
+
     final userId = _authManager.credentials.value?.user.sub;
     if (userId == null || userId.isEmpty) {
       _state.value = _state.value.copyWith(
@@ -52,10 +81,13 @@ class ProfileManager extends ChangeNotifier {
 
     try {
       final profile = await _profileService.getProfile(userId);
+      final signedUrl =
+          await _profileService.getSignedAvatarUrl(profile.avatarPath);
       _state.value = _state.value.copyWith(
         loadState: ProfileLoadState.loaded,
         saveState: ProfileSaveState.idle,
         profile: profile,
+        signedAvatarUrl: signedUrl,
         clearErrorMessage: true,
         missingLinkedProfile: false,
       );
@@ -115,11 +147,14 @@ class ProfileManager extends ChangeNotifier {
         avatarBytes: input.avatarBytes,
         avatarFileExtension: input.avatarFileExtension,
       );
+      final signedUrl =
+          await _profileService.getSignedAvatarUrl(profile.avatarPath);
 
       _state.value = _state.value.copyWith(
         loadState: ProfileLoadState.loaded,
         saveState: ProfileSaveState.saved,
         profile: profile,
+        signedAvatarUrl: signedUrl,
         clearErrorMessage: true,
         missingLinkedProfile: false,
       );
@@ -134,6 +169,7 @@ class ProfileManager extends ChangeNotifier {
 
   @override
   void dispose() {
+    _authManager.credentials.removeListener(_onCredentialsChanged);
     _state.dispose();
     loadProfileCommand.dispose();
     updateProfileCommand.dispose();

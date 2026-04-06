@@ -78,6 +78,7 @@ class ProfileViewState {
   final String? errorMessage;
   final bool missingLinkedProfile;
   final ProfileRecord? profile;
+  final String? signedAvatarUrl;
 
   const ProfileViewState({
     required this.loadState,
@@ -85,6 +86,7 @@ class ProfileViewState {
     this.errorMessage,
     this.missingLinkedProfile = false,
     this.profile,
+    this.signedAvatarUrl,
   });
 
   const ProfileViewState.initial()
@@ -92,7 +94,8 @@ class ProfileViewState {
       saveState = ProfileSaveState.idle,
       errorMessage = null,
       missingLinkedProfile = false,
-      profile = null;
+      profile = null,
+      signedAvatarUrl = null;
 
   ProfileViewState copyWith({
     ProfileLoadState? loadState,
@@ -102,6 +105,8 @@ class ProfileViewState {
     bool? missingLinkedProfile,
     ProfileRecord? profile,
     bool clearProfile = false,
+    String? signedAvatarUrl,
+    bool clearSignedAvatarUrl = false,
   }) {
     return ProfileViewState(
       loadState: loadState ?? this.loadState,
@@ -111,6 +116,9 @@ class ProfileViewState {
           : (errorMessage ?? this.errorMessage),
       missingLinkedProfile: missingLinkedProfile ?? this.missingLinkedProfile,
       profile: clearProfile ? null : (profile ?? this.profile),
+      signedAvatarUrl: clearSignedAvatarUrl
+          ? null
+          : (signedAvatarUrl ?? this.signedAvatarUrl),
     );
   }
 }

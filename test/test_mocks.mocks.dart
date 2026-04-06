@@ -200,4 +200,19 @@ class MockProfileService extends _i1.Mock implements _i7.ProfileService {
             ),
           )
           as _i5.Future<_i3.ProfileRecord>);
+
+  @override
+  _i5.Future<String?> getSignedAvatarUrl(String? storagePath) =>
+      (super.noSuchMethod(
+            Invocation.method(#getSignedAvatarUrl, [storagePath]),
+            returnValue: _i5.Future<String?>.value(),
+            returnValueForMissingStub: _i5.Future<String?>.value(),
+          )
+          as _i5.Future<String?>);
+
+  @override
+  void clearCache() => super.noSuchMethod(
+    Invocation.method(#clearCache, []),
+    returnValueForMissingStub: null,
+  );
 }

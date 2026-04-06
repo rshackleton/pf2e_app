@@ -67,3 +67,16 @@ flutter test
 - [ ] Submit new adventure with exactly 200 characters → succeeds
 - [ ] Attempt to set avatar with a non-image extension (e.g. `.pdf`) → app shows error, no upload
 - [ ] Log out → log in as a different user → no data from previous session visible
+
+### FR-001 offline avatar verification (US1)
+
+After one successful profile page load with avatar visible:
+1. Enable airplane mode / set network to offline
+2. Restart (or re-launch) the app — do **not** clear app data
+3. Navigate to the profile page
+4. The avatar MUST display immediately from disk cache, with **no** network request visible in the device proxy log
+
+**Image cache key note**: The disk cache key is the avatar *storage path* (e.g. `users_abc123/1234567890.png`), NOT the signed URL. This means:
+- The disk cache remains valid when the signed URL rotates on expiry (FR-005/FR-007)
+- Invalidation on upload (`updateProfile`) removes the entry by storage path via `ImageCacheManager.removeFile(path)` (FR-003)
+

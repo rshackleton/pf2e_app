@@ -47,6 +47,10 @@ class _NewAdventurePageState extends State<NewAdventurePage> {
                     return 'Please enter the adventure name.';
                   }
 
+                  if (value.length > 200) {
+                    return 'Adventure name must be 200 characters or fewer.';
+                  }
+
                   return null;
                 },
               ),

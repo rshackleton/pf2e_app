@@ -28,6 +28,7 @@ class HomePage extends WatchingWidget {
                 onPressed: () => context.router.navigate(ProfileRoute()),
                 icon: ProfileAvatarView(
                   avatarPath: profileState.profile?.avatarPath,
+                  signedAvatarUrl: profileState.signedAvatarUrl,
                   firstName: profileState.profile?.firstName,
                   lastName: profileState.profile?.lastName,
                   radius: 14,
