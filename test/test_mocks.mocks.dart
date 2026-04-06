@@ -3,13 +3,16 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i5;
+import 'dart:typed_data' as _i8;
 
-import 'package:auth0_flutter/auth0_flutter.dart' as _i5;
+import 'package:auth0_flutter/auth0_flutter.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:pf2e_app/features/adventures/services/adventure_service.dart'
     as _i2;
-import 'package:pf2e_app/features/auth/services/auth_service.dart' as _i3;
+import 'package:pf2e_app/features/auth/services/auth_service.dart' as _i4;
+import 'package:pf2e_app/features/profile/model/profile_record.dart' as _i3;
+import 'package:pf2e_app/features/profile/services/profile_service.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -31,36 +34,41 @@ class _FakeAdventure_0 extends _i1.SmartFake implements _i2.Adventure {
     : super(parent, parentInvocation);
 }
 
+class _FakeProfileRecord_1 extends _i1.SmartFake implements _i3.ProfileRecord {
+  _FakeProfileRecord_1(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
 /// A class which mocks [AuthService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockAuthService extends _i1.Mock implements _i3.AuthService {
+class MockAuthService extends _i1.Mock implements _i4.AuthService {
   @override
-  _i4.Future<_i5.Credentials?> login() =>
+  _i5.Future<_i6.Credentials?> login() =>
       (super.noSuchMethod(
             Invocation.method(#login, []),
-            returnValue: _i4.Future<_i5.Credentials?>.value(),
-            returnValueForMissingStub: _i4.Future<_i5.Credentials?>.value(),
+            returnValue: _i5.Future<_i6.Credentials?>.value(),
+            returnValueForMissingStub: _i5.Future<_i6.Credentials?>.value(),
           )
-          as _i4.Future<_i5.Credentials?>);
+          as _i5.Future<_i6.Credentials?>);
 
   @override
-  _i4.Future<void> logout() =>
+  _i5.Future<void> logout() =>
       (super.noSuchMethod(
             Invocation.method(#logout, []),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
 
   @override
-  _i4.Future<_i5.Credentials?> getSession() =>
+  _i5.Future<_i6.Credentials?> getSession() =>
       (super.noSuchMethod(
             Invocation.method(#getSession, []),
-            returnValue: _i4.Future<_i5.Credentials?>.value(),
-            returnValueForMissingStub: _i4.Future<_i5.Credentials?>.value(),
+            returnValue: _i5.Future<_i6.Credentials?>.value(),
+            returnValueForMissingStub: _i5.Future<_i6.Credentials?>.value(),
           )
-          as _i4.Future<_i5.Credentials?>);
+          as _i5.Future<_i6.Credentials?>);
 }
 
 /// A class which mocks [AdventureService].
@@ -68,52 +76,128 @@ class MockAuthService extends _i1.Mock implements _i3.AuthService {
 /// See the documentation for Mockito's code generation for more information.
 class MockAdventureService extends _i1.Mock implements _i2.AdventureService {
   @override
-  _i4.Future<List<_i2.Adventure>> getAdventures() =>
+  _i5.Future<List<_i2.Adventure>> getAdventures() =>
       (super.noSuchMethod(
             Invocation.method(#getAdventures, []),
-            returnValue: _i4.Future<List<_i2.Adventure>>.value(
+            returnValue: _i5.Future<List<_i2.Adventure>>.value(
               <_i2.Adventure>[],
             ),
-            returnValueForMissingStub: _i4.Future<List<_i2.Adventure>>.value(
+            returnValueForMissingStub: _i5.Future<List<_i2.Adventure>>.value(
               <_i2.Adventure>[],
             ),
           )
-          as _i4.Future<List<_i2.Adventure>>);
+          as _i5.Future<List<_i2.Adventure>>);
 
   @override
-  _i4.Future<_i2.Adventure?> getAdventure(int? id) =>
+  _i5.Future<_i2.Adventure?> getAdventure(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#getAdventure, [id]),
-            returnValue: _i4.Future<_i2.Adventure?>.value(),
-            returnValueForMissingStub: _i4.Future<_i2.Adventure?>.value(),
+            returnValue: _i5.Future<_i2.Adventure?>.value(),
+            returnValueForMissingStub: _i5.Future<_i2.Adventure?>.value(),
           )
-          as _i4.Future<_i2.Adventure?>);
+          as _i5.Future<_i2.Adventure?>);
 
   @override
-  _i4.Future<_i2.Adventure> createAdventure(String? name) =>
+  _i5.Future<_i2.Adventure> createAdventure(String? name) =>
       (super.noSuchMethod(
             Invocation.method(#createAdventure, [name]),
-            returnValue: _i4.Future<_i2.Adventure>.value(
+            returnValue: _i5.Future<_i2.Adventure>.value(
               _FakeAdventure_0(
                 this,
                 Invocation.method(#createAdventure, [name]),
               ),
             ),
-            returnValueForMissingStub: _i4.Future<_i2.Adventure>.value(
+            returnValueForMissingStub: _i5.Future<_i2.Adventure>.value(
               _FakeAdventure_0(
                 this,
                 Invocation.method(#createAdventure, [name]),
               ),
             ),
           )
-          as _i4.Future<_i2.Adventure>);
+          as _i5.Future<_i2.Adventure>);
 
   @override
-  _i4.Future<void> deleteAdventure(int? id) =>
+  _i5.Future<void> deleteAdventure(int? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteAdventure, [id]),
-            returnValue: _i4.Future<void>.value(),
-            returnValueForMissingStub: _i4.Future<void>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i4.Future<void>);
+          as _i5.Future<void>);
+}
+
+/// A class which mocks [ProfileService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockProfileService extends _i1.Mock implements _i7.ProfileService {
+  @override
+  _i5.Future<_i3.ProfileRecord> getProfile(String? userId) =>
+      (super.noSuchMethod(
+            Invocation.method(#getProfile, [userId]),
+            returnValue: _i5.Future<_i3.ProfileRecord>.value(
+              _FakeProfileRecord_1(
+                this,
+                Invocation.method(#getProfile, [userId]),
+              ),
+            ),
+            returnValueForMissingStub: _i5.Future<_i3.ProfileRecord>.value(
+              _FakeProfileRecord_1(
+                this,
+                Invocation.method(#getProfile, [userId]),
+              ),
+            ),
+          )
+          as _i5.Future<_i3.ProfileRecord>);
+
+  @override
+  _i5.Future<_i3.ProfileRecord> updateProfile(
+    String? userId, {
+    String? firstName,
+    String? lastName,
+    _i8.Uint8List? avatarBytes,
+    String? avatarFileExtension,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #updateProfile,
+              [userId],
+              {
+                #firstName: firstName,
+                #lastName: lastName,
+                #avatarBytes: avatarBytes,
+                #avatarFileExtension: avatarFileExtension,
+              },
+            ),
+            returnValue: _i5.Future<_i3.ProfileRecord>.value(
+              _FakeProfileRecord_1(
+                this,
+                Invocation.method(
+                  #updateProfile,
+                  [userId],
+                  {
+                    #firstName: firstName,
+                    #lastName: lastName,
+                    #avatarBytes: avatarBytes,
+                    #avatarFileExtension: avatarFileExtension,
+                  },
+                ),
+              ),
+            ),
+            returnValueForMissingStub: _i5.Future<_i3.ProfileRecord>.value(
+              _FakeProfileRecord_1(
+                this,
+                Invocation.method(
+                  #updateProfile,
+                  [userId],
+                  {
+                    #firstName: firstName,
+                    #lastName: lastName,
+                    #avatarBytes: avatarBytes,
+                    #avatarFileExtension: avatarFileExtension,
+                  },
+                ),
+              ),
+            ),
+          )
+          as _i5.Future<_i3.ProfileRecord>);
 }

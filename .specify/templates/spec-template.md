@@ -1,8 +1,8 @@
 # Feature Specification: [FEATURE NAME]
 
-**Feature Branch**: `[###-feature-name]`  
-**Created**: [DATE]  
-**Status**: Draft  
+**Feature Branch**: `[###-feature-name]`
+**Created**: [DATE]
+**Status**: Draft
 **Input**: User description: "$ARGUMENTS"
 
 ## User Scenarios & Testing *(mandatory)*
@@ -11,7 +11,7 @@
   IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
   Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
   you should still have a viable MVP (Minimum Viable Product) that delivers value.
-  
+
   Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
   Think of each story as a standalone slice of functionality that can be:
   - Developed independently
@@ -85,7 +85,7 @@
 ### Functional Requirements
 
 - **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]  
+- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]
 - **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
@@ -94,6 +94,19 @@
 
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
 - **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+
+## Affected Areas & Constraints *(mandatory)*
+
+<!--
+  ACTION REQUIRED: Capture repo-specific implementation constraints so the plan
+  can satisfy the constitution without rediscovering impact later.
+-->
+
+- **Affected Feature Modules**: [e.g., `lib/features/auth`, `lib/features/profile`, or `none`]
+- **Manager/Service Boundary Impact**: [state owners and I/O owners that will change, or `none`]
+- **Navigation/Auth Impact**: [routes, guards, redirects, or session scope changes, or `none`]
+- **Code Generation Impact**: [e.g., `auto_route`, `mockito`, `none`]
+- **External Integration Impact**: [e.g., Auth0, Supabase, dotenv, platform APIs, or `none`]
 
 ### Key Entities *(include if feature involves data)*
 
@@ -126,3 +139,14 @@
 - [Assumption about scope boundaries, e.g., "Mobile support is out of scope for v1"]
 - [Assumption about data/environment, e.g., "Existing authentication system will be reused"]
 - [Dependency on existing system/service, e.g., "Requires access to the existing user profile API"]
+
+## Verification Strategy *(mandatory)*
+
+<!--
+  ACTION REQUIRED: Name the automated and manual verification expected before
+  merge. If no automated test will be added, justify that choice explicitly.
+-->
+
+- **Automated Coverage**: [unit, widget, flow, or integration tests to add/update]
+- **Manual Validation**: [manual steps for reviewers or QA]
+- **Testability Risks**: [known gaps, or `none`]

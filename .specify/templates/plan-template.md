@@ -17,21 +17,25 @@
   the iteration process.
 -->
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+**Language/Version**: Dart 3.11 / Flutter stable (adjust only if the feature requires a newer pinned version)
+**Primary Dependencies**: Flutter, auto_route, get_it, watch_it, command_it, listen_it, plus feature-specific integrations such as Auth0 or Supabase
+**Storage**: [e.g., Supabase, local device storage, memory-only, or N/A]
+**Testing**: flutter_test, widget tests, integration-style flow tests, mockito
+**Target Platform**: Flutter mobile app first; note any web, desktop, or platform-specific impact
+**Project Type**: Flutter application
+**Performance Goals**: [e.g., smooth 60 fps UI, bounded loading latency, or NEEDS CLARIFICATION]
+**Constraints**: [e.g., authenticated flows, offline assumptions, generated-route sync, or NEEDS CLARIFICATION]
+**Scale/Scope**: [e.g., number of screens, features touched, or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- [ ] Feature-first placement is defined: every code change maps to `lib/features/...`, `lib/locator.dart`, `lib/router.dart`, or a justified shared location.
+- [ ] Manager/service boundaries are explicit: state owners, I/O owners, and DI registrations are identified.
+- [ ] Verification is explicit: tests to add or update are named, and any manual-only validation is justified.
+- [ ] Navigation, auth, and dependency-scope impact is identified, including guard or scoped override changes.
+- [ ] Code generation and dependency impact is identified, including whether `build_runner` or route regeneration is required.
 
 ## Project Structure
 
@@ -50,49 +54,38 @@ specs/[###-feature]/
 ### Source Code (repository root)
 <!--
   ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
-  for this feature. Delete unused options and expand the chosen structure with
-  real paths (e.g., apps/admin, packages/something). The delivered plan must
-  not include Option labels.
+  for this feature. Expand the tree with the exact feature directories you will
+  touch and remove entries that are not relevant.
 -->
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
+lib/
+├── app.dart
+├── locator.dart
+├── router.dart
+├── router.gr.dart
+├── env/
+└── features/
+    ├── auth/
+    │   ├── manager/
+    │   ├── services/
+    │   └── widgets/
+    ├── adventures/
+    │   ├── manager/
+    │   ├── services/
+    │   ├── widgets/
+    │   └── [pages].dart
+    └── [feature-under-change]/
 
-tests/
-├── contract/
-├── integration/
-└── unit/
-
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
-
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
-
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+test/
+├── [feature]_flow_test.dart
+├── test_helpers.dart
+├── test_mocks.dart
+└── test_mocks.mocks.dart
 ```
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+**Structure Decision**: [Document the selected feature directories, any shared files,
+and whether routing, DI, or generated files are affected]
 
 ## Complexity Tracking
 
@@ -100,5 +93,5 @@ directories captured above]
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+| [e.g., new shared module] | [current need] | [why feature-local placement is insufficient] |
+| [e.g., new dependency] | [specific problem] | [why get_it/watch_it/command_it/current packages are insufficient] |

@@ -2,7 +2,7 @@
   "servers": {
     "supabase": {
       "type": "http",
-      "url": "https://mcp.supabase.com/mcp?project_ref=qfhljffpfjvdpwdpubif&features=database%2Cbranching"
+      "url": "https://mcp.supabase.com/mcp?project_ref=qfhljffpfjvdpwdpubif&features=docs%2Cdatabase%2Cdevelopment%2Cbranching"
     }
   }
 }

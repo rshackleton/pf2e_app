@@ -8,7 +8,8 @@ description: "Task list template for feature implementation"
 **Input**: Design documents from `/specs/[###-feature-name]/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
-**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
+**Tests**: Verification tasks are REQUIRED for every behavior-changing story. If no new automated
+test is added, the task list MUST include the reason and the manual validation steps.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
@@ -20,26 +21,26 @@ description: "Task list template for feature implementation"
 
 ## Path Conventions
 
-- **Single project**: `src/`, `tests/` at repository root
-- **Web app**: `backend/src/`, `frontend/src/`
-- **Mobile**: `api/src/`, `ios/src/` or `android/src/`
-- Paths shown below assume single project - adjust based on plan.md structure
+- **App code**: `lib/features/`, `lib/app.dart`, `lib/locator.dart`, `lib/router.dart`
+- **Generated code**: `lib/router.gr.dart`, `test/test_mocks.mocks.dart`, other generator outputs
+- **Tests**: `test/` with relative imports for shared test utilities
+- Paths shown below assume this Flutter repository structure - adjust to the exact feature paths in `plan.md`
 
-<!-- 
+<!--
   ============================================================================
   IMPORTANT: The tasks below are SAMPLE TASKS for illustration purposes only.
-  
+
   The /speckit.tasks command MUST replace these with actual tasks based on:
   - User stories from spec.md (with their priorities P1, P2, P3...)
   - Feature requirements from plan.md
   - Entities from data-model.md
   - Endpoints from contracts/
-  
+
   Tasks MUST be organized by user story so each story can be:
   - Implemented independently
   - Tested independently
   - Delivered as an MVP increment
-  
+
   DO NOT keep these sample tasks in the generated tasks.md file.
   ============================================================================
 -->
@@ -48,9 +49,9 @@ description: "Task list template for feature implementation"
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T001 Create project structure per implementation plan
-- [ ] T002 Initialize [language] project with [framework] dependencies
-- [ ] T003 [P] Configure linting and formatting tools
+- [ ] T001 Create or confirm the feature-local structure in `lib/features/[feature]/`
+- [ ] T002 Identify any updates needed in `lib/locator.dart`, `lib/router.dart`, or `lib/env/`
+- [ ] T003 [P] Prepare test scaffolding or mocks in `test/` for the changed feature
 
 ---
 
@@ -62,12 +63,12 @@ description: "Task list template for feature implementation"
 
 Examples of foundational tasks (adjust based on your project):
 
-- [ ] T004 Setup database schema and migrations framework
-- [ ] T005 [P] Implement authentication/authorization framework
-- [ ] T006 [P] Setup API routing and middleware structure
-- [ ] T007 Create base models/entities that all stories depend on
-- [ ] T008 Configure error handling and logging infrastructure
-- [ ] T009 Setup environment configuration management
+- [ ] T004 Establish manager and service responsibilities for the feature
+- [ ] T005 [P] Register new dependencies or scoped overrides in `lib/locator.dart`
+- [ ] T006 [P] Define route, guard, or navigation changes in `lib/router.dart`
+- [ ] T007 Create or update shared models/entities used by multiple stories
+- [ ] T008 Configure loading/error handling surfaces for async commands
+- [ ] T009 Note any code generation or environment configuration work required
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -79,21 +80,21 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 1 (OPTIONAL - only if tests requested) ⚠️
+### Tests for User Story 1 ⚠️
 
-> **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
+> **NOTE: Define verification before implementation and ensure it exercises the user-facing behavior**
 
-- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T010 [P] [US1] Add or update widget/unit/flow test coverage in `test/[name]_test.dart`
+- [ ] T011 [P] [US1] Add manual validation notes only if automation cannot fully cover the change
 
 ### Implementation for User Story 1
 
-- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
-- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
-- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
-- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T016 [US1] Add validation and error handling
-- [ ] T017 [US1] Add logging for user story 1 operations
+- [ ] T012 [P] [US1] Create or update feature models/state holders in `lib/features/[feature]/`
+- [ ] T013 [P] [US1] Implement service-layer changes in `lib/features/[feature]/services/`
+- [ ] T014 [US1] Implement manager or command logic in `lib/features/[feature]/manager/`
+- [ ] T015 [US1] Implement UI, page, or widget changes in `lib/features/[feature]/`
+- [ ] T016 [US1] Update routing, guards, or dependency registration if required
+- [ ] T017 [US1] Regenerate code if annotations, routes, or mocks changed
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -105,17 +106,17 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 2 (OPTIONAL - only if tests requested) ⚠️
+### Tests for User Story 2 ⚠️
 
-- [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T018 [P] [US2] Add or update widget/unit/flow test coverage in `test/[name]_test.dart`
+- [ ] T019 [P] [US2] Add manual validation notes only if automation cannot fully cover the change
 
 ### Implementation for User Story 2
 
-- [ ] T020 [P] [US2] Create [Entity] model in src/models/[entity].py
-- [ ] T021 [US2] Implement [Service] in src/services/[service].py
-- [ ] T022 [US2] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T023 [US2] Integrate with User Story 1 components (if needed)
+- [ ] T020 [P] [US2] Create or update feature models/state holders in `lib/features/[feature]/`
+- [ ] T021 [US2] Implement service or integration updates in `lib/features/[feature]/services/`
+- [ ] T022 [US2] Implement manager and UI behavior in `lib/features/[feature]/`
+- [ ] T023 [US2] Update routing, DI, or generated code if this story changes those boundaries
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
 
@@ -127,16 +128,16 @@ Examples of foundational tasks (adjust based on your project):
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 3 (OPTIONAL - only if tests requested) ⚠️
+### Tests for User Story 3 ⚠️
 
-- [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T024 [P] [US3] Add or update widget/unit/flow test coverage in `test/[name]_test.dart`
+- [ ] T025 [P] [US3] Add manual validation notes only if automation cannot fully cover the change
 
 ### Implementation for User Story 3
 
-- [ ] T026 [P] [US3] Create [Entity] model in src/models/[entity].py
-- [ ] T027 [US3] Implement [Service] in src/services/[service].py
-- [ ] T028 [US3] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T026 [P] [US3] Create or update feature models/state holders in `lib/features/[feature]/`
+- [ ] T027 [US3] Implement service or integration updates in `lib/features/[feature]/services/`
+- [ ] T028 [US3] Implement manager and UI behavior in `lib/features/[feature]/`
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -153,8 +154,9 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX [P] Documentation updates in docs/
 - [ ] TXXX Code cleanup and refactoring
 - [ ] TXXX Performance optimization across all stories
-- [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
+- [ ] TXXX [P] Additional regression coverage in `test/`
 - [ ] TXXX Security hardening
+- [ ] TXXX Regenerate code and verify generated diffs if applicable
 - [ ] TXXX Run quickstart.md validation
 
 ---
@@ -178,10 +180,10 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Within Each User Story
 
-- Tests (if included) MUST be written and FAIL before implementation
-- Models before services
-- Services before endpoints
-- Core implementation before integration
+- Verification tasks MUST be defined before implementation tasks begin
+- State holders before service wiring when both are changing
+- Services and managers before dependent widgets or pages
+- Route, DI, and codegen updates before story sign-off
 - Story complete before moving to next priority
 
 ### Parallel Opportunities
@@ -189,8 +191,8 @@ Examples of foundational tasks (adjust based on your project):
 - All Setup tasks marked [P] can run in parallel
 - All Foundational tasks marked [P] can run in parallel (within Phase 2)
 - Once Foundational phase completes, all user stories can start in parallel (if team capacity allows)
-- All tests for a user story marked [P] can run in parallel
-- Models within a story marked [P] can run in parallel
+- All verification tasks for a user story marked [P] can run in parallel
+- Models or service changes within a story marked [P] can run in parallel
 - Different user stories can be worked on in parallel by different team members
 
 ---
@@ -198,13 +200,13 @@ Examples of foundational tasks (adjust based on your project):
 ## Parallel Example: User Story 1
 
 ```bash
-# Launch all tests for User Story 1 together (if tests requested):
-Task: "Contract test for [endpoint] in tests/contract/test_[name].py"
-Task: "Integration test for [user journey] in tests/integration/test_[name].py"
+# Launch all verification tasks for User Story 1 together:
+Task: "Add widget/unit/flow test coverage in test/[name]_test.dart"
+Task: "Document manual validation only if automation is incomplete"
 
-# Launch all models for User Story 1 together:
-Task: "Create [Entity1] model in src/models/[entity1].py"
-Task: "Create [Entity2] model in src/models/[entity2].py"
+# Launch independent implementation tasks for User Story 1 together:
+Task: "Update feature models/state holders in lib/features/[feature]/..."
+Task: "Update service-layer changes in lib/features/[feature]/services/..."
 ```
 
 ---
@@ -244,8 +246,7 @@ With multiple developers:
 
 - [P] tasks = different files, no dependencies
 - [Story] label maps task to specific user story for traceability
-- Each user story should be independently completable and testable
-- Verify tests fail before implementing
-- Commit after each task or logical group
-- Stop at any checkpoint to validate story independently
-- Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence
+- Each user story should be independently completable and verifiable
+- Include route, DI, and codegen tasks whenever those surfaces change
+- Stop at each checkpoint to validate the story independently
+- Avoid vague tasks, same-file conflicts, and cross-story dependencies that break independence

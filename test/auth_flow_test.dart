@@ -12,6 +12,7 @@ import 'test_mocks.mocks.dart';
 void main() {
   late MockAuthService mockAuthService;
   late MockAdventureService mockAdventureService;
+  late MockProfileService mockProfileService;
 
   setUpAll(() async {
     await configureTestDependencies();
@@ -20,6 +21,7 @@ void main() {
   setUp(() {
     mockAuthService = MockAuthService();
     mockAdventureService = MockAdventureService();
+    mockProfileService = MockProfileService();
 
     when(mockAdventureService.getAdventures()).thenAnswer((_) async => []);
     when(mockAdventureService.getAdventure(any)).thenAnswer((_) async => null);
@@ -31,6 +33,7 @@ void main() {
     registerServiceMocks(
       authService: mockAuthService,
       adventureService: mockAdventureService,
+      profileService: mockProfileService,
     );
   });
 
@@ -58,6 +61,9 @@ void main() {
         mockAuthService.getSession(),
       ).thenAnswer((_) async => mockCredentials);
       when(mockAuthService.login()).thenAnswer((_) async => mockCredentials);
+      when(
+        mockProfileService.getProfile(any),
+      ).thenAnswer((_) async => buildCompleteProfile());
 
       // Act: Tap the Login button
       await tester.tap(find.widgetWithText(FilledButton, 'Login'));
@@ -68,7 +74,7 @@ void main() {
       expect(find.byType(HomePage), findsOneWidget);
 
       // Act: Tap the Profile button
-      await tester.tap(find.widgetWithIcon(IconButton, Icons.account_circle));
+      await tester.tap(find.byTooltip('Profile'));
       await tester.pumpAndSettle();
 
       // Assert: Verify profile page is displayed
@@ -85,5 +91,16 @@ void main() {
       verify(mockAuthService.logout()).called(1);
       expect(find.byType(LoginPage), findsOneWidget);
     });
+  });
+
+  testWidgets('profile page stays behind authentication guard', (
+    WidgetTester tester,
+  ) async {
+    when(mockAuthService.getSession()).thenAnswer((_) async => null);
+
+    await pumpApp(tester);
+
+    expect(find.byType(LoginPage), findsOneWidget);
+    expect(find.byType(ProfilePage), findsNothing);
   });
 }
