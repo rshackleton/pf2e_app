@@ -1,8 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:pf2e_app/features/profile/services/image_cache_manager.dart';
+import 'package:pf2e_app/locator.dart';
 
-class ProfileAvatarView extends StatefulWidget {
+class ProfileAvatarView extends StatelessWidget {
   final String? avatarPath;
+  final String? signedAvatarUrl;
   final String? firstName;
   final String? lastName;
   final double radius;
@@ -10,56 +13,15 @@ class ProfileAvatarView extends StatefulWidget {
   const ProfileAvatarView({
     super.key,
     required this.avatarPath,
+    required this.signedAvatarUrl,
     required this.firstName,
     required this.lastName,
     this.radius = 64,
   });
 
-  @override
-  State<ProfileAvatarView> createState() => _ProfileAvatarViewState();
-}
-
-class _ProfileAvatarViewState extends State<ProfileAvatarView> {
-  Future<String?>? _avatarUrlFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _avatarUrlFuture = _resolveAvatarUrl(widget.avatarPath);
-  }
-
-  @override
-  void didUpdateWidget(ProfileAvatarView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.avatarPath != widget.avatarPath) {
-      _avatarUrlFuture = _resolveAvatarUrl(widget.avatarPath);
-    }
-  }
-
-  Future<String?> _resolveAvatarUrl(String? pathOrUrl) async {
-    if (pathOrUrl == null || pathOrUrl.trim().isEmpty) {
-      return null;
-    }
-
-    final value = pathOrUrl.trim();
-    final uri = Uri.tryParse(value);
-    if (uri != null && uri.hasScheme) {
-      return value;
-    }
-
-    final normalizedPath = value.startsWith('/') ? value.substring(1) : value;
-    try {
-      return await Supabase.instance.client.storage
-          .from('avatars')
-          .createSignedUrl(normalizedPath, 3600);
-    } catch (_) {
-      return null;
-    }
-  }
-
   String? _computeInitials() {
-    final first = widget.firstName?.trim() ?? '';
-    final last = widget.lastName?.trim() ?? '';
+    final first = firstName?.trim() ?? '';
+    final last = lastName?.trim() ?? '';
 
     if (first.isNotEmpty || last.isNotEmpty) {
       final a = first.isNotEmpty ? first.characters.first : '';
@@ -73,30 +35,48 @@ class _ProfileAvatarViewState extends State<ProfileAvatarView> {
   @override
   Widget build(BuildContext context) {
     final initials = _computeInitials();
+    final url = signedAvatarUrl;
 
-    return FutureBuilder<String?>(
-      future: _avatarUrlFuture,
-      builder: (context, snapshot) {
-        final resolvedUrl = snapshot.data;
+    if (url != null && url.isNotEmpty) {
+      return CachedNetworkImage(
+        imageUrl: url,
+        cacheManager: di<ImageCacheManager>(),
+        cacheKey: avatarPath ?? url,
+        imageBuilder: (context, imageProvider) => CircleAvatar(
+          backgroundImage: imageProvider,
+          radius: radius,
+        ),
+        placeholder: (context, url) => CircleAvatar(
+          radius: radius,
+          child: Icon(Icons.person, size: radius * 0.75),
+        ),
+        errorWidget: (context, url, error) => CircleAvatar(
+          radius: radius,
+          child: initials != null
+              ? Text(
+                  initials,
+                  style: TextStyle(
+                    fontSize: radius * 0.44,
+                    fontWeight: FontWeight.w700,
+                  ),
+                )
+              : Icon(Icons.person, size: radius * 0.75),
+        ),
+      );
+    }
 
-        return CircleAvatar(
-          backgroundImage: resolvedUrl != null
-              ? NetworkImage(resolvedUrl)
-              : null,
-          radius: widget.radius,
-          child: resolvedUrl == null
-              ? (initials != null
-                    ? Text(
-                        initials,
-                        style: TextStyle(
-                          fontSize: widget.radius * 0.44,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      )
-                    : Icon(Icons.person, size: widget.radius * 0.75))
-              : null,
-        );
-      },
+    return CircleAvatar(
+      radius: radius,
+      child: initials != null
+          ? Text(
+              initials,
+              style: TextStyle(
+                fontSize: radius * 0.44,
+                fontWeight: FontWeight.w700,
+              ),
+            )
+          : Icon(Icons.person, size: radius * 0.75),
     );
   }
 }
+

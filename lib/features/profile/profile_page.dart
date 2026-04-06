@@ -148,7 +148,6 @@ class _ProfileContentState extends State<_ProfileContent> {
     }
 
     final profile = widget.viewState.profile;
-    final avatarPath = profile?.avatarPath;
 
     return Column(
       spacing: 16,
@@ -159,7 +158,8 @@ class _ProfileContentState extends State<_ProfileContent> {
                 radius: 64,
               )
             : ProfileAvatarView(
-                avatarPath: avatarPath,
+                avatarPath: profile?.avatarPath,
+                signedAvatarUrl: widget.viewState.signedAvatarUrl,
                 firstName: profile?.firstName,
                 lastName: profile?.lastName,
               ),
@@ -178,11 +178,32 @@ class _ProfileContentState extends State<_ProfileContent> {
                     return;
                   }
 
-                  final bytes = await picked.readAsBytes();
                   final dotIndex = picked.name.lastIndexOf('.');
                   final extension = dotIndex >= 0
                       ? picked.name.substring(dotIndex + 1).toLowerCase()
-                      : 'png';
+                      : '';
+
+                  const allowedExtensions = {
+                    'jpeg',
+                    'jpg',
+                    'png',
+                    'webp',
+                    'gif',
+                  };
+                  if (!allowedExtensions.contains(extension)) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Unsupported file type. Please select a JPEG, PNG, WebP, or GIF image.',
+                          ),
+                        ),
+                      );
+                    }
+                    return;
+                  }
+
+                  final bytes = await picked.readAsBytes();
 
                   setState(() {
                     _selectedAvatarBytes = bytes;

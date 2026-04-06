@@ -1,17 +1,36 @@
 import 'package:command_it/command_it.dart';
 import 'package:flutter/foundation.dart';
+import 'package:pf2e_app/features/auth/manager/auth_manager.dart';
 import 'package:pf2e_app/features/adventures/services/adventure_service.dart';
 import 'package:pf2e_app/locator.dart';
 
 class AdventureManager extends ChangeNotifier {
   final _adventureService = di<AdventureService>();
+  final _authManager = di<AuthManager>();
 
   final _adventure = ValueNotifier<Adventure?>(null);
   final _adventures = ValueNotifier<List<Adventure>>([]);
 
+  bool _hasLoaded = false;
+
   ValueListenable<Adventure?> get adventure => _adventure;
 
   ValueListenable<List<Adventure>> get adventures => _adventures;
+
+  AdventureManager() {
+    _authManager.credentials.addListener(_onCredentialsChanged);
+  }
+
+  void _onCredentialsChanged() {
+    if (_authManager.credentials.value == null) {
+      clearSession();
+    }
+  }
+
+  void clearSession() {
+    _adventures.value = [];
+    _hasLoaded = false;
+  }
 
   late final getAdventuresCommand = Command.createAsyncNoParamNoResult(
     _getAdventures,
@@ -34,9 +53,12 @@ class AdventureManager extends ChangeNotifier {
   );
 
   Future<void> _getAdventures() async {
+    if (_hasLoaded) return;
+
     try {
       final adventures = await _adventureService.getAdventures();
       _adventures.value = adventures;
+      _hasLoaded = true;
     } catch (e) {
       debugPrint('Failed to fetch adventures: $e');
     }
@@ -74,6 +96,7 @@ class AdventureManager extends ChangeNotifier {
 
   @override
   void dispose() {
+    _authManager.credentials.removeListener(_onCredentialsChanged);
     _adventures.dispose();
     createAdventureCommand.dispose();
     getAdventuresCommand.dispose();
