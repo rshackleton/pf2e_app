@@ -51,7 +51,7 @@ Manual validation checklist:
 
 ## 7. Rollout Notes
 1. Deploy Supabase migrations for `profiles` schema and `avatars` storage policies before app rollout.
-2. Configure Auth0 Action secrets (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`) in each environment.
+2. Configure Auth0 Action secrets (`SUPABASE_URL`, `SUPABASE_SECRET_KEY`) in each environment.
 3. Validate profile edit flow in staging with a newly registered Auth0 user and an existing user.
 4. Monitor Action logs and Supabase API logs for provisioning failures during first rollout window.
 
