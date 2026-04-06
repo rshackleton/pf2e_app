@@ -136,7 +136,7 @@ class SupabaseProfileService implements ProfileService {
           ? oldAvatarPath.substring(1)
           : oldAvatarPath;
       _signedUrlCache.remove(normalizedOld);
-      di<ImageCacheManager>().removeFile(normalizedOld);
+      await di<ImageCacheManager>().removeFile(normalizedOld);
     }
 
     return getProfile(userId);

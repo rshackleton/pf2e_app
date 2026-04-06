@@ -35,19 +35,3 @@ Future<void> configureDependencies() async {
     dispose: (m) => m.dispose(),
   );
 }
-
-  di.registerLazySingleton<AdventureManager>(
-    () => AdventureManager(),
-    dispose: (m) => m.dispose(),
-  );
-
-  di.registerLazySingleton<AuthManager>(
-    () => AuthManager(),
-    dispose: (m) => m.dispose(),
-  );
-
-  di.registerLazySingleton<ProfileManager>(
-    () => ProfileManager(),
-    dispose: (m) => m.dispose(),
-  );
-}
