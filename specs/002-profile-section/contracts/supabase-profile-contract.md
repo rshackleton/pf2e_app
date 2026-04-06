@@ -31,7 +31,9 @@ Defines the data contract between Flutter profile services and Supabase resource
 ## Security / RLS Contract
 - `public.profiles` RLS enabled.
 - Policies guarantee users can select/update only rows where `user_id = jwt.sub`.
-- `storage.objects` policies scoped to bucket `avatars` and folder prefix matching user identity.
+- `storage.objects` policies scoped to bucket `avatars`:
+  - `INSERT`, `UPDATE`, `DELETE`: owner-only (folder prefix must match sanitized `jwt.sub`).
+  - `SELECT`: any authenticated user (avatars are visible to all signed-in users).
 
 ## Error Contract
 - Missing linked profile after successful auth: return integration error state with actionable retry/support guidance.

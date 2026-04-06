@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class ProfileAvatarView extends StatelessWidget {
+class ProfileAvatarView extends StatefulWidget {
   final String? avatarPath;
   final String? firstName;
   final String? lastName;
@@ -16,30 +16,27 @@ class ProfileAvatarView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final initials = _computeInitials();
-    final resolvedAvatarUrl = _resolveAvatarUrl(avatarPath);
+  State<ProfileAvatarView> createState() => _ProfileAvatarViewState();
+}
 
-    return CircleAvatar(
-      backgroundImage: resolvedAvatarUrl != null
-          ? NetworkImage(resolvedAvatarUrl)
-          : null,
-      radius: radius,
-      child: resolvedAvatarUrl == null
-          ? (initials != null
-                ? Text(
-                    initials,
-                    style: TextStyle(
-                      fontSize: radius * 0.44,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  )
-                : Icon(Icons.person, size: radius * 0.75))
-          : null,
-    );
+class _ProfileAvatarViewState extends State<ProfileAvatarView> {
+  Future<String?>? _avatarUrlFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _avatarUrlFuture = _resolveAvatarUrl(widget.avatarPath);
   }
 
-  String? _resolveAvatarUrl(String? pathOrUrl) {
+  @override
+  void didUpdateWidget(ProfileAvatarView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.avatarPath != widget.avatarPath) {
+      _avatarUrlFuture = _resolveAvatarUrl(widget.avatarPath);
+    }
+  }
+
+  Future<String?> _resolveAvatarUrl(String? pathOrUrl) async {
     if (pathOrUrl == null || pathOrUrl.trim().isEmpty) {
       return null;
     }
@@ -51,14 +48,18 @@ class ProfileAvatarView extends StatelessWidget {
     }
 
     final normalizedPath = value.startsWith('/') ? value.substring(1) : value;
-    return Supabase.instance.client.storage
-        .from('avatars')
-        .getPublicUrl(normalizedPath);
+    try {
+      return await Supabase.instance.client.storage
+          .from('avatars')
+          .createSignedUrl(normalizedPath, 3600);
+    } catch (_) {
+      return null;
+    }
   }
 
   String? _computeInitials() {
-    final first = firstName?.trim() ?? '';
-    final last = lastName?.trim() ?? '';
+    final first = widget.firstName?.trim() ?? '';
+    final last = widget.lastName?.trim() ?? '';
 
     if (first.isNotEmpty || last.isNotEmpty) {
       final a = first.isNotEmpty ? first.characters.first : '';
@@ -67,5 +68,35 @@ class ProfileAvatarView extends StatelessWidget {
     }
 
     return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final initials = _computeInitials();
+
+    return FutureBuilder<String?>(
+      future: _avatarUrlFuture,
+      builder: (context, snapshot) {
+        final resolvedUrl = snapshot.data;
+
+        return CircleAvatar(
+          backgroundImage: resolvedUrl != null
+              ? NetworkImage(resolvedUrl)
+              : null,
+          radius: widget.radius,
+          child: resolvedUrl == null
+              ? (initials != null
+                    ? Text(
+                        initials,
+                        style: TextStyle(
+                          fontSize: widget.radius * 0.44,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      )
+                    : Icon(Icons.person, size: widget.radius * 0.75))
+              : null,
+        );
+      },
+    );
   }
 }
