@@ -29,12 +29,12 @@ class ProfileAvatarView extends StatelessWidget {
           ? (initials != null
                 ? Text(
                     initials,
-                    style: const TextStyle(
-                      fontSize: 28,
+                    style: TextStyle(
+                      fontSize: radius * 0.44,
                       fontWeight: FontWeight.w700,
                     ),
                   )
-                : const Icon(Icons.person, size: 48))
+                : Icon(Icons.person, size: radius * 0.75))
           : null,
     );
   }

@@ -74,7 +74,7 @@ void main() {
       expect(find.byType(HomePage), findsOneWidget);
 
       // Act: Tap the Profile button
-      await tester.tap(find.widgetWithIcon(IconButton, Icons.account_circle));
+      await tester.tap(find.byTooltip('Profile'));
       await tester.pumpAndSettle();
 
       // Assert: Verify profile page is displayed
