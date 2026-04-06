@@ -10,7 +10,7 @@
 1. Create/verify `public.profiles` schema with `user_id` primary key.
 2. Enable RLS on `public.profiles` and add owner-only select/update policies.
 3. Create/verify `avatars` bucket.
-4. Add storage policies that support user-scoped upload/read/update; include `INSERT`, `SELECT`, `UPDATE` for upsert behavior.
+4. Add storage policies that support owner-scoped upload/update/delete and authenticated-user read access; include `INSERT`, `SELECT`, and `UPDATE` for upsert behavior.
 
 ## 2. Implement Auth0 provisioning Action
 1. Create or update Auth0 Action in registration flow.
@@ -46,7 +46,7 @@ Manual validation checklist:
 ## 6. Done criteria
 - All functional requirements FR-001..FR-017 satisfied.
 - Automated tests pass and cover primary user stories.
-- RLS and storage policies verified against owner-only access.
+- RLS and storage policies verified against owner-only profile access, owner-scoped avatar writes, and authenticated-user avatar reads.
 - No unresolved constitution gate failures.
 
 ## 7. Rollout Notes
